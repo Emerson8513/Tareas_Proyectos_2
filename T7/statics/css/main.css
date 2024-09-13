@@ -1,0 +1,164 @@
+#cart-icon {
+    width: 25px;
+    display: inline-block;
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
+#cart-total {
+    display: inline-block;
+    text-align: center;
+    color: #fff;
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 20px;
+    margin-left: -10px;
+}
+
+.navbar {
+    padding: 10px 20px;
+    background-color: aquamarine;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+#login-boton{
+    background-color: yellow;
+}
+
+/* Estilo para el título */
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #28a745;
+}
+
+/* Estilo para las columnas de productos */
+.col-lg-4 {
+    margin-bottom: 20px;
+}
+
+/* Estilo para las imágenes de los productos */
+.thumbnail {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para el contenedor de productos */
+.box-element.product {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.box-element.product:hover {
+    transform: translateY(-5px);
+}
+
+/* Estilo para los botones */
+.btn {
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* Estilo para el precio del producto */
+h4 {
+    margin-top: 10px;
+    color: #28a745;
+}
+
+
+
+/* Estilo para el carrito de compras */
+/* Estilo para las filas del carrito */
+.cart-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Estilo para la fila de encabezado del carrito */
+.cart-row.header {
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilo para las imágenes de los productos */
+.row-image {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para los elementos del contenedor */
+.box-element {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.2s;
+}
+
+.box-element:hover {
+    transform: translateY(-5px);
+}
+
+/* Estilo para los botones oscuros */
+.btn-outline-dark {
+    margin-bottom: 10px;
+}
+
+/* Estilo para la cantidad de productos */
+.quantity {
+    display: inline-block;
+    font-weight: 700;
+    padding-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Estilo para los botones de cambio de cantidad */
+.chg-quantity {
+    width: 20px;
+    cursor: pointer;
+    display: block;
+    margin-top: 5px;
+    transition: opacity 0.1s;
+}
+
+.chg-quantity:hover {
+    opacity: 0.6;
+}
