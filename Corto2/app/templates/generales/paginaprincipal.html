@@ -1,0 +1,72 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    :root {
+        --main-color: white;
+        --padding: 100px 0;
+    }
+
+    /* Efecto parallax */
+    .parallax {
+        min-height: 500px;
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .title-welcome {
+        color: var(--main-color);
+        font-size: 4rem;
+        font-weight: bold;
+    }
+    h2 {
+        color: var(--main-color);
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+    /* Secciones con imágenes de fondo */
+    #section1 {
+        background-image: url("{% static 'img/biblioteca_central.jpg' %}");
+    }
+
+    #section2 {
+        background-image: url("{% static 'img/rectoria.jpg' %}");
+    }
+
+    #section3 {
+        background-image: url("{% static 'img/reandesta.jpg' %}");
+    }
+
+    /* Estilos adicionales para el contenido */
+    .section-content {
+        color: var(--main-color);
+        text-align: center;
+        padding: var(--padding);
+    }
+</style>
+
+<!-- Secciones con efecto parallax -->
+<div id="section1" class="parallax" role="img" aria-label="Biblioteca Central">
+    <div class="section-content">
+        <h1 class="title-welcome">Bienvenidos a Academia USAC</h1>
+        <p>Desarrolla tu futuro con los mejores cursos en ingeniería.</p>
+    </div>
+</div>
+
+<div id="section2" class="parallax" role="img" aria-label="Rectoría">
+    <div class="section-content">
+        <h2>Nuestros Cursos</h2>
+        <p>Especialízate en las áreas más demandadas del mercado laboral.</p>
+    </div>
+</div>
+
+<div id="section3" class="parallax" role="img" aria-label="Reandesta">
+    <div class="section-content">
+        <h2>Contacta con Nosotros</h2>
+        <p>Estamos aquí para ayudarte a alcanzar tus metas.</p>
+    </div>
+</div>
+
+{% endblock content %}
