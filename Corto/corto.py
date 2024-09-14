@@ -259,9 +259,6 @@ while opcion != 5:
         rows = cursor.fetchall()
         for row in rows:
             print(f"Usuario: {row[0]}, Placa: {row[2]}, Nit: {row[1]}, Hora de entrada: {row[3]}, Minutos de Entrada: {row[4]}, Hora de salida: {row[5]}, Minutos de salida: {row[6]}")
-            df = pd.DataFrame(rows, columns=["Usuario", "Nit", "Placa", "Hora de entrada", "Minutos de entrada", "Hora de salida", "Minutos de salida"])
-            df.to_excel("E:/perez/Documentos/Cursos 2do. Semestre 2024/PROYECTOS DE COMPUTACION APLICADA A I.E. Seccion P/Tareas Proyectos/Corto/database/parqueo.xlsx", index=False)
-            print("Archivo CSV creado exitosamente.")
 
     elif opcion == 3:
         menu_borrar()
