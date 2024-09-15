@@ -97,7 +97,7 @@
     }
 
     /* Estilos para la fila de cursos */
-    .row {
+    .row-curses{
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -107,7 +107,7 @@
 
 <h1>Nuestros Cursos</h1>
 
-<div class="row">
+<div class="row-curses">
     {% for curso in courses %}
     <div class="course-container">
         <img src="{{ curso.imageURL }}" alt="Imagen del curso {{ curso.name }}">

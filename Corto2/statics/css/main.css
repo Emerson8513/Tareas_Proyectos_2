@@ -162,3 +162,93 @@ h4 {
 .chg-quantity:hover {
     opacity: 0.6;
 }
+
+/* Asegura que los elementos se alineen correctamente */
+.navbar-nav {
+    display: flex;
+    flex-direction: row;
+}
+
+.navbar-nav.ml-auto {
+    margin-left: auto;
+}
+
+/* Estilo para el recuadro informativo */
+.info-box {
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Fondo semi-transparente */
+    color: white;
+    /* Color del texto */
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    /* Centrado automático */
+    opacity: 0;
+    /* Inicialmente oculto */
+    transform: translateY(20px);
+    /* Desplazado hacia abajo al inicio */
+    transition: opacity 1s ease, transform 1s ease;
+    /* Transiciones para el efecto de aparición */
+}
+
+/* Clase para activar el efecto de aparición */
+.section-content.show-info .info-box {
+    opacity: 1;
+    /* Visibilidad completa */
+    transform: translateY(0);
+    /* Posición original */
+}
+
+/* Carrusel de cursos */
+.course-card {
+    flex: 0 0 auto;
+    width: 300px;
+    /* Ajusta el ancho según sea necesario */
+    margin-right: 15px;
+    background-color: rgb(19, 18, 18);
+    border: 1px solid #090909;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    padding: 15px;
+}
+
+.course-card img {
+    max-width: 100%;
+    height: auto;
+    border-bottom: 1px solid #dddddd;
+}
+
+.carousel-inner {
+    display: flex;
+}
+
+.carousel-item {
+    flex: 1 0 auto;
+    display: flex;
+}
+
+
+
+/* Botón de ver todos los cursos */
+.btn-view-all {
+    display: block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #ffbb00;
+    /* Color de fondo del botón */
+    color: #000;
+    /* Color del texto del botón */
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.btn-view-all:hover {
+    background: #e6a700;
+    /* Color de fondo del botón al pasar el ratón */
+}

@@ -16,16 +16,19 @@
         background-position: center;
         background-repeat: no-repeat;
     }
+
     .title-welcome {
         color: var(--main-color);
         font-size: 4rem;
         font-weight: bold;
     }
+
     h2 {
         color: var(--main-color);
         font-size: 2.5rem;
         font-weight: bold;
     }
+
     /* Secciones con imágenes de fondo */
     #section1 {
         background-image: url("{% static 'img/biblioteca_central.jpg' %}");
@@ -47,20 +50,86 @@
     }
 </style>
 
+
+
 <!-- Secciones con efecto parallax -->
 <div id="section1" class="parallax" role="img" aria-label="Biblioteca Central">
     <div class="section-content">
         <h1 class="title-welcome">Bienvenidos a Academia USAC</h1>
         <p>Desarrolla tu futuro con los mejores cursos en ingeniería.</p>
+        <!-- Recuadro informativo -->
+        <div class="info-box">
+            <h3>Sobre Nosotros</h3>
+            <p>En Academia USAC ofrecemos una amplia gama de cursos especializados en ingeniería, con un enfoque
+                práctico y actualizado para preparar a nuestros estudiantes para los desafíos del mundo real.</p>
+        </div>
     </div>
 </div>
+
 
 <div id="section2" class="parallax" role="img" aria-label="Rectoría">
     <div class="section-content">
         <h2>Nuestros Cursos</h2>
         <p>Especialízate en las áreas más demandadas del mercado laboral.</p>
+
+        <!-- Carrusel de Cursos -->
+        <div id="coursesCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="d-flex overflow-auto">
+                        <div class="course-card">
+                            <img src="{% static 'img/cursopcb.png' %}" class="img-fluid" alt="Curso 1">
+                            <h3>Diseño de PCBs y Electrónica Avanzada</h3>
+                            <p>Aprende a diseñar circuitos impresos complejos utilizando software especializado y
+                                técnicas avanzadas de simulación de circuitos.</p>
+                            <p class="course-price">Q 120.00</p>
+                        </div>
+                        <div class="course-card">
+                            <img src="{% static 'img/pi.jpg' %}" class="img-fluid" alt="Curso 2">
+                            <h3>Automatización con Raspberry Pi</h3>
+                            <p>Aprende a utilizar Raspberry Pi para proyectos de automatización, con un enfoque en la
+                                integración de sensores y controladores.</p>
+                            <p class="course-price">Q 180.00</p>
+                        </div>
+                        <!-- Agrega más tarjetas de curso aquí -->
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="d-flex overflow-auto">
+                        <div class="course-card">
+                            <img src="{% static 'img/plc.jpg' %}" class="img-fluid" alt="Curso 3">
+                            <h3>Automatización Industrial con PLCs</h3>
+                            <p>Capacitación en programación de PLCs para el control y monitoreo de sistemas industriales
+                                automatizados.</p>
+                            <p class="course-price">Q 150</p>
+                        </div>
+                        <div class="course-card">
+                            <img src="{% static 'img/intro.jpeg' %}" class="img-fluid" alt="Curso 4">
+                            <h3>Introducción a la Electrónica</h3>
+                            <p>Fundamentos de la electrónica, incluyendo circuitos básicos y componentes electrónicos.
+                            </p>
+                            <p class="course-price">Q 500</p>
+                        </div>
+                        <!-- Agrega más tarjetas de curso aquí -->
+                    </div>
+                </div>
+                <!-- Agrega más items de carrusel aquí si es necesario -->
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#coursesCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#coursesCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <a href="{% url 'cursos' %}" class="btn btn-warning mt-3">Ver todos</a>
     </div>
 </div>
+
+
+
 
 <div id="section3" class="parallax" role="img" aria-label="Reandesta">
     <div class="section-content">

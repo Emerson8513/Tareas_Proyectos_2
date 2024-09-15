@@ -82,62 +82,65 @@ input[required] {
     <h1 class="mb-4">Registro</h1>
     <p class="mb-4">Por favor, complete este formulario para registrarse.</p>
 
-    <form>
-        <div class="mb-3">
-            <label for="name" class="form-label"><b>Nombre</b></label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese su nombre" required>
-        </div>
+<form method="post" action="{% url 'registro' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="mb-3">
+        <label for="name" class="form-label"><b>Nombre</b></label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese su nombre" required>
+    </div>
 
-        <div class="mb-3">
-            <label for="lastname" class="form-label"><b>Apellido</b></label>
-            <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Ingrese su apellido"
-                required>
-        </div>
+    <div class="mb-3">
+        <label for="lastname" class="form-label"><b>Apellido</b></label>
+        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Ingrese su apellido"
+            required>
+    </div>
 
-        <div class="mb-3">
-            <label for="DPI" class="form-label"><b>DPI</b></label>
-            <input type="text" class="form-control" id="DPI" name="DPI" placeholder="Ingrese su DPI" pattern="[0-9]{13}"
-                required>
-        </div>
+    <div class="mb-3">
+        <label for="DPI" class="form-label"><b>DPI</b></label>
+        <input type="text" class="form-control" id="DPI" name="DPI" placeholder="Ingrese su DPI" pattern="[0-9]{13}"
+            required>
+    </div>
 
-        <div class="mb-3">
-            <label for="date" class="form-label"><b>Fecha de Nacimiento</b></label>
-            <input type="date" class="form-control" id="date" name="date" required>
-        </div>
+    <div class="mb-3">
+        <label for="date" class="form-label"><b>Fecha de Nacimiento</b></label>
+        <input type="date" class="form-control" id="date" name="date" required>
+    </div>
 
-        <div class="mb-3">
-            <label for="telephone" class="form-label"><b>Teléfono</b></label>
-            <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="Ingrese su teléfono"
-                pattern="[0-9]{8,10}" required>
-        </div>
+    <div class="mb-3">
+        <label for="telephone" class="form-label"><b>Teléfono</b></label>
+        <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="Ingrese su teléfono"
+            pattern="[0-9]{8,10}" required>
+    </div>
 
-        <div class="mb-3">
-            <label for="username" class="form-label"><b>Nombre de Usuario</b></label>
-            <input type="text" class="form-control" id="username" name="username"
-                placeholder="Ingrese su nombre de usuario" required>
-        </div>
+    <div class="mb-3">
+        <label for="username" class="form-label"><b>Nombre de Usuario</b></label>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Ingrese su nombre de usuario"
+            required>
+    </div>
 
-        <div class="mb-3">
-            <label for="email" class="form-label"><b>Correo Electrónico</b></label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su correo electrónico"
-                required>
-        </div>
+    <div class="mb-3">
+        <label for="email" class="form-label"><b>Correo Electrónico</b></label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su correo electrónico"
+            required>
+    </div>
 
-        <div class="mb-3">
-            <label for="pwd" class="form-label"><b>Contraseña</b></label>
-            <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Ingrese su contraseña"
-                minlength="8" required>
-        </div>
+    <div class="mb-3">
+        <label for="pwd" class="form-label"><b>Contraseña</b></label>
+        <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Ingrese su contraseña"
+            minlength="8" required>
+    </div>
 
-        <div class="mb-3">
-            <label for="pwd-repeat" class="form-label"><b>Repita su Contraseña</b></label>
-            <input type="password" class="form-control" id="pwd-repeat" name="pwd-repeat"
-                placeholder="Repita su contraseña" minlength="8" required>
-        </div>
+    <div class="mb-3">
+        <label for="pwd-repeat" class="form-label"><b>Repita su Contraseña</b></label>
+        <input type="password" class="form-control" id="pwd-repeat" name="pwd-repeat" placeholder="Repita su contraseña"
+            minlength="8" required>
+    </div>
 
-        <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary">Registrar</button>
-        </div>
-    </form>
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+    </div>
+</form>
+
 </div>
 {% endblock content %}
