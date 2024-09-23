@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from .models import *
 from django.contrib import messages
 from django.contrib.auth.models import User
+import re
 def paginaprincipal(request):
     context = {}
     return render(request,'generales/paginaprincipal.html',context)
@@ -43,16 +44,37 @@ def register(request):
         password = request.POST['pwd']
         password_check = request.POST['pwd-repeat']
 
-        # Validación básica de contraseñas
         if password != password_check:
             messages.error(request, 'Las contraseñas no coinciden.')
-            return redirect('register')
-    
-        # Crear el usuario para el campo username
+            return render(request, 'generales/register.html',{
+                'name':name,
+                'lastname':lastname,
+                'dpi':dpi,
+                'date':date,
+                'telephone':telephone,
+                'username':username,
+                'email':email,
+            })
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{12,}$', password):
+                    messages.error(request, 'La contraseña debe tener al menos 12 caracteres, incluyendo una letra mayúscula, un número y un carácter especial.')
+                    return render(request, 'generales/register.html', {...})
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'El nombre de usuario ya está en uso. Por favor elija otro.')
+            return render(request, 'generales/register.html', {
+                'name': name,
+                'lastname': lastname,
+                'dpi': dpi,
+                'date': date,
+                'telephone': telephone,
+                'username': username,
+                'email': email,
+            })
+
+            
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
 
-        # Crear la instancia de Student y guardarla en la base de datos
         student = Student.objects.create(
             name=name,
             lastname=lastname,
@@ -61,8 +83,8 @@ def register(request):
             telefhone=telephone,
             username=user,
             email=email,
-            password=password,
-            password_check=password_check,
+            # password=password,
+            # password_check=password_check,
         )
         student.save()
 
