@@ -110,8 +110,15 @@
     <h2>Inicio de sesión</h2>
     <img src="{% static 'img/logo_usac.png' %}" alt="Logo USAC">
     <p class="alumnos-text">Alumnos</p>
-    <form method="post" action="curso/">
+    <form method="post" action="{% url 'paginaprincipal' %}">
         {% csrf_token %}
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="form-group">
             <label for="username">Nombre de Usuario</label>
             <input type="text" id="username" name="username" required>
@@ -125,11 +132,12 @@
             <div class="divider">
                 <span>ó</span>
             </div>
-            <a href="curso/" class="btn">Regístrate</a>
+            <a href="{% url 'registro' %}" class="btn">Regístrate</a>
             <div class="forgot-password">
                 <a href="{% url 'cursos' %}">Recuperar Contraseña</a>
             </div>
         </div>
     </form>
 </div>
+
 {% endblock content %}

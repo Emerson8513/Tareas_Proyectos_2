@@ -93,6 +93,27 @@
         background-color: #f8f9fa;
         /* Fondo gris claro para campos requeridos */
     }
+
+    .alert {
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
 </style>
 <div class="container mt-5">
     <h1 class="mb-4">Registro</h1>
@@ -152,6 +173,7 @@
 
         <div class="mb-3">
             <label for="pwd" class="form-label"><b>Contraseña</b></label>
+            <span class="toggle-password" onclick="togglePasswordVisibility('pwd')">👁️</span>
             <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Ingrese su contraseña"
                 minlength="12" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{12,}$" required
                 title="La contraseña debe tener al menos 12 caracteres, incluyendo una letra mayúscula, un número y un carácter especial.">
@@ -159,6 +181,7 @@
 
         <div class="mb-3">
             <label for="pwd-repeat" class="form-label"><b>Repita su Contraseña</b></label>
+            <span class="toggle-password" onclick="togglePasswordVisibility('pwd-repeat')">👁️</span>
             <input type="password" class="form-control" id="pwd-repeat" name="pwd-repeat"
                 placeholder="Repita su contraseña" minlength="12"
                 pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{12,}$" required
@@ -172,4 +195,15 @@
     </form>
 </div>
 
+<script>
+    function togglePasswordVisibility(id) {
+        var passwordInput = document.getElementById(id);
+        var passwordType = passwordInput.getAttribute('type');
+        if (passwordType === 'password') {
+            passwordInput.setAttribute('type', 'text');
+        } else {
+            passwordInput.setAttribute('type', 'password');
+        }
+    }
+</script>
 {% endblock content %}

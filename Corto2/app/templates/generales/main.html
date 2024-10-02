@@ -17,7 +17,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="{% url 'paginaprincipal' %}">
             <img src="{% static 'img/logo_usac.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
             Academia USAC
         </a>
@@ -36,14 +36,28 @@
                     <a class="nav-link" href="{% url 'cursos' %}">Cursos</a>
                 </li>
             </ul>
+
             <ul class="navbar-nav ml-auto">
+                <!-- Verificar si el usuario está autenticado -->
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <!-- Mostrar el nombre de usuario -->
+                        Hola, {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                    </ul>
+                </li>
+                {% else %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Ingresar
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{% url 'estudiantes' %}">Alumno</a></li>
+                        <li><a class="dropdown-item" href="{% url 'login' %}">Alumno</a></li>
                         <li><a class="dropdown-item" href="{% url 'docentes' %}">Docente</a></li>
                         <li><a class="dropdown-item" href="{% url 'admin:index' %}">Administrador</a></li>
                     </ul>
@@ -51,6 +65,7 @@
                 <li class="nav-item">
                     <a class="nav-link bg-warning text-dark" href="{% url 'registro' %}">Registrarse</a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </nav>

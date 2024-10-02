@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 # Create your models here.
 
 class Course(models.Model):
@@ -61,3 +63,20 @@ class Student(models.Model):
         except:
             url = ''
         return url
+    
+
+    #axes
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    failed_attempts = models.IntegerField(default=0)  # Almacena los intentos fallidos
+    is_locked = models.BooleanField(default=False)    # Indica si la cuenta está bloqueada
+    lockout_time = models.DateTimeField(null=True, blank=True)  # Tiempo de bloqueo (si aplica)
+
+    def unlock(self):
+        """Desbloquea el usuario si ha pasado el tiempo de bloqueo."""
+        if self.lockout_time and timezone.now() >= self.lockout_time:
+            self.is_locked = False
+            self.failed_attempts = 0
+            self.lockout_time = None
+            self.save()
