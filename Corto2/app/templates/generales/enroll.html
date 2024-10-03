@@ -1,0 +1,13 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+
+{% block content %}
+  <h2>Matricularse en {{ course.name }}</h2>
+  
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirmar Matrícula</button>
+  </form>
+
+  {% endblock content %}

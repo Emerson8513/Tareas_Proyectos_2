@@ -1,0 +1,24 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Bienvenido, {{ student.name }}</h1>
+<p>Estos son los cursos en los que estás matriculado:</p>
+
+<div class="row-curses">
+    {% for enrollment in enrolled_courses %}
+        <div class="course-container">
+            <img src="{{ enrollment.course.imageURL }}" alt="Imagen del curso {{ enrollment.course.name }}">
+            <h2 class="course-title">{{ enrollment.course.name }}</h2>
+            <p class="course-description">{{ enrollment.course.description }}</p>
+            <div class="course-info">
+                <p><strong>Instructor:</strong> {{ enrollment.course.teacher }}</p>
+                <p><strong>Duración:</strong> {{ enrollment.course.duration }} Horas</p>
+                <p><strong>Código del curso:</strong> {{ enrollment.course.codigocurso }}</p>
+            </div>
+            <p class="course-price">Q {{ enrollment.course.price }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

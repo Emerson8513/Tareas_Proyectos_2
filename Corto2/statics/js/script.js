@@ -12,3 +12,4 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('scroll', checkVisibility);
     checkVisibility(); // Check visibility on page load
 });
+

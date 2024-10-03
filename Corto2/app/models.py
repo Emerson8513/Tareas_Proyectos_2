@@ -24,16 +24,16 @@ class Course(models.Model):
         return url
     
 class Teacher(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=50)
-    lastname= models.CharField(max_length=50)
+    lastname = models.CharField(max_length=50)
     image = models.ImageField(null=True, blank=True)
-    dpi= models.CharField(max_length=50)
-    email= models.CharField(max_length=50)
-    password= models.CharField(max_length=50)
-    password_check= models.CharField(max_length=50)
+    dpi = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
     
     def __str__(self):
         return self.name
+
     @property
     def imageURL(self):
         try:
@@ -80,3 +80,17 @@ class UserProfile(models.Model):
             self.failed_attempts = 0
             self.lockout_time = None
             self.save()
+
+
+class Enrollment(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    enrollment_date = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        unique_together = ('student', 'course')
+
+    def __str__(self):
+        return f"{self.student.name} - {self.course.name}"
+    
+

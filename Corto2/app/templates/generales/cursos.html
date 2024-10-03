@@ -96,8 +96,15 @@
         background-color: #0056b3;
     }
 
+    .course-btn.disabled {
+        background-color: #6c757d;
+        /* Color para el botón deshabilitado */
+        cursor: not-allowed;
+        /* Cursor que indica que está deshabilitado */
+    }
+
     /* Estilos para la fila de cursos */
-    .row-curses{
+    .row-curses {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -119,7 +126,15 @@
             <p><strong>Código del curso:</strong> {{ curso.codigocurso }}</p>
         </div>
         <p class="course-price">Q {{ curso.price }}</p>
-        <button class="course-btn">Inscribirse ahora</button>
+
+        <!-- Botón de inscripción -->
+        {% if curso.id in enrolled_courses %}
+        <button class="course-btn" disabled>Ya matriculado</button>
+        {% else %}
+        <a href="{% url 'enroll_in_course' curso.id %}">
+            <button class="course-btn">Inscribirse ahora</button>
+        </a>
+        {% endif %}
     </div>
     {% endfor %}
 </div>
