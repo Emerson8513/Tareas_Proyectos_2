@@ -54,7 +54,7 @@
                             {% elif is_teacher %}
                             <li><a class="dropdown-item" href="{%url 'docentes'%}">Panel Docente</a></li>
                             {% elif is_student %}
-                            <li><a class="dropdown-item" href="{% url 'estudiantes'%}">Panel Estudiante</a></li>
+                            <li><a class="dropdown-item" href="{% url 'my_courses'%}">Panel Estudiante</a></li>
                             {% endif %}
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
                         </ul>
