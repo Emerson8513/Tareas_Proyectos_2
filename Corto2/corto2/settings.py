@@ -131,7 +131,7 @@ STATICFILES_DIRS = [
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'statics/img')
 MEDIA_URL = '/img/'
@@ -141,3 +141,7 @@ LOGIN_URL = 'login'
 AXES_FAILURE_LIMIT = 3
 AXES_COOLOFF_TIME = 1
 AXES_ONLY_USER_FAILURES = True
+
+# Configuración del correo electrónico
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+

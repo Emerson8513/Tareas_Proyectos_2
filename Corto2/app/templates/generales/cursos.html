@@ -124,12 +124,15 @@
             <p><strong>Instructor:</strong> {{ curso.teacher }}</p>
             <p><strong>Duración:</strong> {{ curso.duration }} Horas</p>
             <p><strong>Código del curso:</strong> {{ curso.codigocurso }}</p>
+            <p><strong>Capacidad:</strong> {{ curso.enrolled_students }}/{{ curso.capacity }}</p>
         </div>
         <p class="course-price">Q {{ curso.price }}</p>
 
         <!-- Botón de inscripción -->
         {% if curso.id in enrolled_courses %}
         <button class="course-btn" disabled>Ya matriculado</button>
+        {% elif curso.is_full %}
+        <button class="course-btn" disabled>Curso lleno</button>
         {% else %}
         <a href="{% url 'enroll_in_course' curso.id %}">
             <button class="course-btn">Inscribirse ahora</button>

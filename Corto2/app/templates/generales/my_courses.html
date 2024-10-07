@@ -5,20 +5,85 @@
 <h1>Bienvenido, {{ student.name }}</h1>
 <p>Estos son los cursos en los que estás matriculado:</p>
 
-<div class="row-curses">
-    {% for enrollment in enrolled_courses %}
-        <div class="course-container">
-            <img src="{{ enrollment.course.imageURL }}" alt="Imagen del curso {{ enrollment.course.name }}">
-            <h2 class="course-title">{{ enrollment.course.name }}</h2>
-            <p class="course-description">{{ enrollment.course.description }}</p>
-            <div class="course-info">
-                <p><strong>Instructor:</strong> {{ enrollment.course.teacher }}</p>
-                <p><strong>Duración:</strong> {{ enrollment.course.duration }} Horas</p>
-                <p><strong>Código del curso:</strong> {{ enrollment.course.codigocurso }}</p>
-            </div>
-            <p class="course-price">Q {{ enrollment.course.price }}</p>
-        </div>
-    {% endfor %}
+<!-- Botón de confirmación -->
+<div>
+    <form action="{% url 'send_confirmation_email' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-confirm">Enviar Confirmación</button>
+    </form>
 </div>
+
+<style>
+    .course-list {
+        width: 100%;
+        max-width: 900px;
+        margin: 20px auto;
+        border-collapse: collapse;
+    }
+
+    .course-list th, .course-list td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .course-list th {
+        background-color: #f2f2f2;
+        text-align: left;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        color: #333;
+    }
+
+    .course-list td {
+        vertical-align: middle;
+    }
+
+    .course-list img {
+        max-width: 100px;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    .btn-unenroll {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-unenroll:hover {
+        background-color: #c82333;
+    }
+</style>
+
+<table class="course-list">
+    <thead>
+        <tr>
+            <th>Imagen</th>
+            <th>Curso</th>
+            <th>Instructor</th>
+            <th>Duración</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for enrollment in enrolled_courses %}
+        <tr>
+            <td><img src="{{ enrollment.course.imageURL }}" alt="Imagen del curso {{ enrollment.course.name }}"></td>
+            <td>{{ enrollment.course.name }}</td>
+            <td>{{ enrollment.course.teacher }}</td>
+            <td>{{ enrollment.course.duration }} Horas</td>
+            <td>
+                <form action="{% url 'unenroll_course' enrollment.course.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-unenroll">Desmatricular</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock content %}

@@ -22,13 +22,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'paginaprincipal' %}">
-                <img src="{% static 'img/logo_usac.png' %}" width="30" height="30" class="d-inline-block align-top"
-                    alt="Academia USAC">
+                <img src="{% static 'img/logo_usac.png' %}" width="30" height="30" class="d-inline-block align-top" alt="Academia USAC">
                 Academia USAC
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -40,21 +37,28 @@
                         <a class="nav-link" href="{% url 'cursos' %}">Cursos</a>
                     </li>
                 </ul>
-
+    
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.student %}
+                            <img src="{{ user.student.imageURL }}" width="30" height="30" class="rounded-circle me-2" alt="Foto de {{ user.username }}">
+                            {% elif user.teacher %}
+                            <img src="{{ user.teacher.imageURL }}" width="30" height="30" class="rounded-circle me-2" alt="Foto de {{ user.username }}">
+                            {% elif user.is_staff %}
+                            <img src="{{ user.admin.imageURL }}" width="30" height="30" class="rounded-circle me-2" alt="Foto de {{ user.username }}">
+                            {% endif %}
                             Hola, {{ user.username }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             {% if is_admin %}
                             <li><a class="dropdown-item" href="{% url 'admin:index' %}">Panel de Admin</a></li>
                             {% elif is_teacher %}
-                            <li><a class="dropdown-item" href="{%url 'docentes'%}">Panel Docente</a></li>
+                            <li><a class="dropdown-item" href="{% url 'docentes' %}">Panel Docente</a></li>
                             {% elif is_student %}
-                            <li><a class="dropdown-item" href="{% url 'my_courses'%}">Panel Estudiante</a></li>
+                            <li><a class="dropdown-item" href="{% url 'my_courses' %}">Panel Estudiante</a></li>
                             {% endif %}
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
                         </ul>
@@ -76,9 +80,11 @@
                     </li>
                     {% endif %}
                 </ul>
+                
             </div>
         </div>
     </nav>
+    
 
 
     <div class="container mt-4">

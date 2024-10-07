@@ -12,9 +12,17 @@ class Course(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2)
     image = models.ImageField(null=True, blank=True)
     codigocurso = models.CharField(max_length=50)
+    capacity = models.IntegerField(default=30)  # Capacidad máxima del curso
+    enrolled_students = models.IntegerField(default=0)  # Almacena el número de estudiantes inscritos
     
     def __str__(self):
         return self.name
+    
+    @property
+    def is_full(self):
+        """Verifica si el curso ha alcanzado su capacidad máxima."""
+        return self.enrolled_students >= self.capacity
+
     @property
     def imageURL(self):
         try:
@@ -22,6 +30,7 @@ class Course(models.Model):
         except:
             url = ''
         return url
+
     
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -72,6 +81,7 @@ class UserProfile(models.Model):
     failed_attempts = models.IntegerField(default=0)  # Almacena los intentos fallidos
     is_locked = models.BooleanField(default=False)    # Indica si la cuenta está bloqueada
     lockout_time = models.DateTimeField(null=True, blank=True)  # Tiempo de bloqueo (si aplica)
+    face_encoding = models.BinaryField(null=True, blank=True) 
 
     def unlock(self):
         """Desbloquea el usuario si ha pasado el tiempo de bloqueo."""
