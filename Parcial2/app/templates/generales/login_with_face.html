@@ -1,0 +1,55 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2>Iniciar Sesión con Reconocimiento Facial</h2>
+    <video id="video" width="400" height="300" autoplay></video>
+    <button id="snap">Tomar Foto</button>
+    <canvas id="canvas" width="400" height="300" style="display:none;"></canvas>
+    <form id="form" method="post" action="{% url 'login_with_face' %}">
+        {% csrf_token %}
+        <input type="hidden" name="image" id="imageData">
+        <input type="hidden" name="username" id="username" value="{{ username }}">
+    </form>
+    <script>
+        // Acceder a la cámara
+        const video = document.getElementById('video');
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            });
+
+        // Tomar la foto
+        document.getElementById('snap').addEventListener('click', function () {
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');  // Cambia a 'image/jpeg' para mayor compatibilidad
+            document.getElementById('imageData').value = dataUrl;
+
+            // Enviar la imagen al servidor usando fetch
+            fetch("{% url 'login_with_face' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded', // Cambia esto para enviar datos como formulario
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `image=${encodeURIComponent(dataUrl)}&username=${encodeURIComponent(document.getElementById('username').value)}` // Envía datos como formulario
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log(result); // Maneja la respuesta del servidor
+                if (result.message) {
+                    alert(result.message); // Muestra un mensaje de éxito
+                } else if (result.error) {
+                    alert(result.error); // Muestra un mensaje de error
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</div>
+{% endblock content %}

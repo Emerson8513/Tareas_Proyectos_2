@@ -1,0 +1,365 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    :root {
+        --main-color: white;
+        --padding: 100px 0;
+    }
+
+    /* Efecto parallax */
+    .parallax {
+        min-height: 500px;
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .title-welcome {
+        color: var(--main-color);
+        font-size: 4rem;
+        font-weight: bold;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .harlow {
+        display: inline-block;
+        animation: slide-horizontal 1.5s ease-out forwards;
+    }
+
+    /* Definir la animación */
+    @keyframes slide-horizontal {
+        0% {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    h2 {
+        color: var(--main-color);
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    /* Secciones con imágenes de fondo */
+    #section1 {
+        background-image: url("{% static 'img/taxis.jfif' %}");
+    }
+
+    #section2 {
+        background-image: url("{% static 'img/taxis3.jpg' %}");
+    }
+    
+    #section3 {
+        background-image: url("{% static 'img/taxis2.jpg' %}");
+    }
+
+    /* Estilos adicionales para el contenido */
+    .section-content {
+        color: var(--main-color);
+        text-align: center;
+        padding: var(--padding);
+    }
+
+    /* Estilo del carrusel */
+    .carousel-inner {
+        display: flex;
+        overflow: hidden;
+    }
+
+    .carousel-item {
+        display: flex;
+        gap: 15px;
+        transition: transform 0.5s ease;
+    }
+
+    .carousel-item img {
+        width: 100%;
+        height: auto;
+    }
+
+    .course-card {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .service-container {
+        display: flex;
+        justify-content: space-between;
+        overflow: hidden;
+        white-space: nowrap;
+        animation: scroll-services 20s linear infinite;
+    }
+
+    .service-card {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 15px;
+        margin-right: 20px;
+        border-radius: 5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 300px;
+    }
+
+    /* Animación del movimiento continuo de servicios */
+    @keyframes scroll-services {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    .card-slider {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 50px 0;
+        }
+
+        .card-container {
+            display: flex;
+            overflow: hidden;
+            scroll-behavior: smooth;
+            padding: 20px;
+            gap: 15px;
+            width: 80%;
+        }
+
+        .card {
+            flex: 0 0 300px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .prev-btn, .next-btn {
+            background-color: #ff9800;
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .prev-btn {
+            left: 10px;
+        }
+
+        .next-btn {
+            right: 10px;
+        }
+
+        .prev-btn:hover, .next-btn:hover {
+            background-color: #e68900;
+        }
+
+        /* Estilo para la imagen oculta al principio */
+        #section3 .image-appear {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        /* Estilo para cuando la imagen es visible */
+        #section3 .image-appear.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+</style>
+
+<!-- Secciones con efecto parallax -->
+<div id="section1" class="parallax" role="img" aria-label="Taxis disponibles">
+    <div class="section-content">
+        <h1 class="title-welcome">Bienvenidos a <span class="harlow highlight">Pochito's Taxi</span></h1>
+        <p>Tu movilidad es nuestra prioridad. Reserva un taxi en cualquier momento.</p>
+        <!-- Recuadro informativo -->
+        <div class="info-box">
+            <h3>Sobre Nosotros</h3>
+            <p>Ofrecemos el mejor servicio de taxis en la ciudad, con conductores capacitados y rutas optimizadas para que
+                llegues a tu destino de manera rápida y segura.</p>
+        </div>
+    </div>
+</div>
+
+<div id="section2" class="parallax" role="img" aria-label="Rutas disponibles">
+    <div class="section-content">
+        <h2>Nuestras Rutas</h2>
+        <p>Descubre nuestras rutas más solicitadas y precios especiales.</p>
+
+<!-- Card Slider de Rutas -->
+<div class="card-slider">
+    <button class="prev-btn"><</button>
+    <div class="card-container">
+        <div class="card">
+            <img src="{% static 'img/zona 1-16.png' %}" alt="Ruta 1">
+            <h3>Ruta Zona 1 a Zona 16</h3>
+            <p>Viaje cómodo desde el centro hasta la zona norte de la ciudad.</p>
+            <p class="service-price">Q 50.00</p>
+        </div>
+        <div class="card">
+            <img src="{% static 'img/aereo.png' %}" alt="Ruta 2">
+            <h3>Ruta Aeropuerto</h3>
+            <p>Servicio directo al Aeropuerto Internacional La Aurora.</p>
+            <p class="service-price">Q 80.00</p>
+        </div>
+        <div class="card">
+            <img src="{% static 'img/zona 15.png' %}" alt="Ruta 3">
+            <h3>Ruta Express Zona 15</h3>
+            <p>Llegada rápida a los principales centros comerciales de la zona 15.</p>
+            <p class="service-price">Q 60.00</p>
+        </div>
+        <div class="card">
+            <img src="{% static 'img/peten.png' %}" alt="Ruta 4">
+            <h3>Ruta Sur a Norte</h3>
+            <p>Conexión desde el sur hasta el norte de la ciudad sin escalas.</p>
+            <p class="service-price">Q 75.00</p>
+        </div>
+    </div>
+    <button class="next-btn">></button>
+</div>
+
+        <a href="{% url 'cursos' %}" class="btn btn-warning mt-3">Ver todas las rutas</a>
+    </div>
+</div>
+
+
+<div id="section3" class="parallax" role="img" aria-label="Contáctanos">
+    <div class="section-content">
+        <h2>Contáctanos</h2>
+        <p>Estamos aquí para atenderte las 24 horas. Reserva tu taxi hoy mismo.</p>
+        <!-- Imagen con efecto de aparición -->
+        <img src="{% static 'img/taxi-logo.png' %}" alt="Contáctanos" class="image-appear" style="width: 15%; max-width: 400px;">
+    </div>
+</div>
+
+<script>
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const cardContainer = document.querySelector('.card-container');
+    const cards = document.querySelectorAll('.card');
+
+    let isMoving = false;
+    let autoSlideInterval;
+
+    // Función para mover al siguiente
+    function moveToNext() {
+        if (isMoving) return;
+        isMoving = true;
+
+        const firstCard = cardContainer.firstElementChild;
+        cardContainer.style.transition = 'transform 0.7s cubic-bezier(0.25, 0.8, 0.5, 1)';
+        cardContainer.style.transform = `translateX(-${firstCard.clientWidth + 15}px)`;
+
+        setTimeout(() => {
+            cardContainer.style.transition = 'none';
+            cardContainer.style.transform = 'translateX(0)';
+            cardContainer.appendChild(firstCard);  // Mueve la primera tarjeta al final
+            isMoving = false;
+        }, 700);  // Duración de la animación
+    }
+
+    // Función para mover al anterior
+    function moveToPrev() {
+        if (isMoving) return;
+        isMoving = true;
+
+        const lastCard = cardContainer.lastElementChild;
+        cardContainer.style.transition = 'none';
+        cardContainer.insertBefore(lastCard, cardContainer.firstElementChild);  // Mueve la última tarjeta al principio
+        cardContainer.style.transform = `translateX(-${lastCard.clientWidth + 15}px)`;
+
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                cardContainer.style.transition = 'transform 0.7s cubic-bezier(0.25, 0.8, 0.5, 1)';
+                cardContainer.style.transform = 'translateX(0)';
+                isMoving = false;
+            }, 0);
+        });
+    }
+
+    // Agregar funcionalidad a los botones
+    nextBtn.addEventListener('click', () => {
+        moveToNext();
+        resetAutoSlide();  // Resetear el auto deslizamiento al interactuar
+    });
+
+    prevBtn.addEventListener('click', () => {
+        moveToPrev();
+        resetAutoSlide();  // Resetear el auto deslizamiento al interactuar
+    });
+
+    // Función para iniciar el desplazamiento automático
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(() => {
+            moveToNext();
+        }, 3000);  // Se mueve cada 3 segundos
+    }
+
+    // Función para detener el desplazamiento automático
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+    }
+
+    // Función para reiniciar el desplazamiento automático
+    function resetAutoSlide() {
+        stopAutoSlide();
+        startAutoSlide();
+    }
+
+    // Iniciar el desplazamiento automático cuando se cargue la página
+    startAutoSlide();
+
+    // Función para verificar si el elemento está visible en el viewport
+    function isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    // Función para manejar la animación de la imagen
+    function handleScroll() {
+        const imageElement = document.querySelector('#section3 .image-appear');
+        if (isElementInViewport(imageElement)) {
+            imageElement.classList.add('visible');
+        }
+    }
+
+    // Escuchar el evento de scroll para activar la animación
+    window.addEventListener('scroll', handleScroll);
+</script>
+
+{% endblock content %}

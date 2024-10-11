@@ -1,0 +1,83 @@
+{% extends 'generales/main.html' %}
+{% block content %}
+
+<style>
+    h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #323b46;
+    font-size: 2.5em;
+    font-weight: bold;
+    }
+
+    .course-details {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .course-details img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .course-details h2 {
+        color: #242c34;
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+
+    .course-details p {
+        font-size: 1.2em;
+        color: #6c757d;
+    }
+
+    .course-details .course-info p {
+        margin: 5px 0;
+    }
+
+    .enroll-btn {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+    }
+
+    .enroll-btn:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<h1>Solicitud de servicio</h1>
+
+<!-- Detalles del curso -->
+<div class="course-details">
+    <img src="{{ course.imageURL }}" alt="Imagen del curso {{ course.name }}">
+    <h2>{{ course.name }}</h2>
+    <p>{{ course.description }}</p>
+    <div class="course-info">
+        <p><strong>Instructor:</strong> {{ course.teacher }}</p>
+        <p><strong>Duración:</strong> {{ course.duration }} Dependiendo de ruta</p>
+        <p><strong>Precio:</strong> Q {{ course.price }} Aprox</p>
+        <p><strong>Placa:</strong> {{ course.placa }}</p>
+    </div>
+</div>
+
+<!-- Formulario de matriculación -->
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <!-- Botón para confirmar la matriculación -->
+    <button type="submit" class="enroll-btn">Confirmar servicio</button>
+</form>
+
+{% endblock %}

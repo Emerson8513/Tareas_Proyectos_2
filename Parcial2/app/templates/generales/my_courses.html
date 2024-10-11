@@ -1,0 +1,211 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="welcome-title">Bienvenido, {{ student.name }}</h1>
+<p class="intro-text">Este es todo el registro que tienes con nosotros</p>
+
+<!-- Botón de confirmación -->
+<div class="confirm-container">
+    <form action="{% url 'cursos' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-confirm">Servicios</button>
+    </form>
+</div>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .welcome-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #333;
+        margin-top: 30px;
+    }
+
+    .intro-text {
+        text-align: center;
+        font-size: 1.2rem;
+        margin: 10px 0 40px;
+        color: #666;
+    }
+
+    .confirm-container {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .btn-confirm {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-confirm:hover {
+        background-color: #218838;
+    }
+
+    .course-list,
+    .history-list {
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto 50px;
+        border-collapse: collapse;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .course-list th,
+    .course-list td,
+    .history-list th,
+    .history-list td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .course-list th,
+    .history-list th {
+        background-color: #007bff;
+        color: white;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        text-transform: uppercase;
+    }
+
+    .course-list td,
+    .history-list td {
+        background-color: white;
+    }
+
+    .course-list td {
+        vertical-align: middle;
+    }
+
+    .course-list img {
+        max-width: 80px;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .btn-unenroll {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-unenroll:hover {
+        background-color: #c82333;
+    }
+
+    .inactive-course {
+        color: #6c757d;
+        font-weight: bold;
+    }
+
+    .history-list th {
+        background-color: #343a40;
+    }
+
+    .history-list td {
+        color: #555;
+    }
+
+    table {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+
+<h2 class="section-title">Mis servicios activos</h2>
+
+<table class="course-list">
+    <thead>
+        <tr>
+            <th>Imagen</th>
+            <th>Conductor</th>
+            <th>Modelo</th>
+            <th>Placa</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for enrollment in enrolled_courses %}
+        <tr>
+            <td><img src="{{ enrollment.course.imageURL }}" alt="Imagen del curso {{ enrollment.course.name }}"></td>
+            <td>{{ enrollment.course.teacher }}</td>
+            <td>{{ enrollment.course.modelo }}</td>
+            <td>{{ enrollment.course.placa }}</td>
+            <td>
+                {% if enrollment.is_active %}
+                <!-- Botón de desmatriculación -->
+                <form action="{% url 'unenroll_course' enrollment.course.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-unenroll">Cancelar</button>
+                </form>
+                {% else %}
+                <span class="inactive-course">Viaje Completado</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No tienes ningun servicio activo actualmente.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2 class="section-title">Historial de servicios</h2>
+
+<table class="history-list">
+    <thead>
+        <tr>
+            <th>Curso</th>
+            <th>Conductor</th>
+            <th>Fecha del servicio</th>
+            <th>Tipo de Acción</th>
+            <th>Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for history in enrollment_history %}
+        <tr>
+            <td>{{ history.course.name }}</td>
+            <td>{{ history.teacher.name }}</td>
+            <td>{{ history.expulsion_date }}</td>
+            <td>
+                {% if history.action_type == 'cobro' %}
+                Expulsión/Cobro
+                {% else %}
+                Desmatriculación
+                {% endif %}
+            </td>
+            <td>{{ history.grade }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No tienes historial de servicios.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock content %}

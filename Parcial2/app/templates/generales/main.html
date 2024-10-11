@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+
+<head>
+    <link rel="icon" href="{% static 'img/taxi-logo.png' %}" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <title>Tienda de Taxis</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/script.js' %}" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        .harlow {
+            font-family: 'Great Vibes', cursive;
+        }
+    </style>
+</head>
+<style>
+    body {
+        background-image: url("{% static 'img/fondo.jpg' %}");
+        background-repeat: repeat; /* Hace que la imagen se repita en todo el fondo */
+        background-size: auto; /* Usa el tamaño original de la imagen */
+        background-position: top left; /* Comienza la repetición desde la esquina superior izquierda */
+    }
+</style>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'paginaprincipal' %}">
+                <img src="{% static 'img/taxi-logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="Logo Tienda de Taxis">
+                <span class="harlow">Pochito's Taxi</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'paginaprincipal' %}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cursos' %}">Servicios</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.student %}
+                            <img src="{{ user.student.imageURL }}" width="30" height="30" class="rounded-circle me-2" alt="Foto de {{ user.username }}">
+                            {% elif user.teacher %}
+                            <img src="{{ user.teacher.imageURL }}" width="30" height="30" class="rounded-circle me-2" alt="Foto de {{ user.username }}">
+                            {% elif user.is_staff %}
+                            <img src="{{ user.admin.imageURL }}" width="30" height="30" class="rounded-circle me-2" alt="Foto de {{ user.username }}">
+                            {% endif %}
+                            Hola, {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if is_admin %}
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Panel de Admin</a></li>
+                            {% elif is_teacher %}
+                            <li><a class="dropdown-item" href="{% url 'teacher_panel' %}">Panel de Conductor</a></li>
+                            {% elif is_student %}
+                            <li><a class="dropdown-item" href="{% url 'my_courses' %}">Panel de Cliente</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Ingresar
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'login' %}">Cliente</a></li>
+                            <li><a class="dropdown-item" href="{% url 'loginteacher' %}">Conductor</a></li>
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Administrador</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link bg-warning text-dark" href="{% url 'registro' %}">Registrarse</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <footer class="bg-dark text-white text-center text-lg-start mt-5">
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 mb-4">
+                    <h5 class="text-uppercase">Tienda de Taxis</h5>
+                    <p>
+                        Ofrecemos un servicio de taxis confiable, seguro y económico. Haz tu reserva en línea y te
+                        recogeremos donde lo necesites.
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase">Contacto</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="mailto:info@tiendadetaxis.com" class="text-white">info@tiendadetaxis.com</a></li>
+                        <li><a href="tel:+50212345678" class="text-white">+502 1234-5678</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase">Síguenos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Facebook</a></li>
+                        <li><a href="#" class="text-white">Twitter</a></li>
+                        <li><a href="#" class="text-white">Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center p-3 bg-dark">
+            © 2024 Tienda de Taxis - Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

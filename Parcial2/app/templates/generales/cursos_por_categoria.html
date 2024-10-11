@@ -1,0 +1,143 @@
+{% extends 'generales/main.html' %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url('statics/img/fondo.jpg');
+        background-repeat: repeat; /* Hace que la imagen se repita en todo el fondo */
+        background-size: auto; /* Usa el tamaño original de la imagen */
+        background-position: top left; /* Comienza la repetición desde la esquina superior izquierda */
+    }
+
+    .container3 {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+        font-size: 2.2em;
+        letter-spacing: 1px;
+    }
+
+    .row-courses {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 20px;
+    }
+
+    .course-container {
+        background-color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        max-width: 300px;
+    }
+
+    .course-container:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .course-container img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .course-title {
+        font-size: 1.8em;
+        margin: 10px 0;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .course-description {
+        font-size: 1em;
+        color: #6c757d;
+        margin: 10px 0;
+        min-height: 60px;
+    }
+
+    .course-info {
+        text-align: left;
+        margin: 10px 0;
+        color: #343a40;
+    }
+
+    .course-info p {
+        margin: 5px 0;
+    }
+
+    .course-price {
+        font-size: 1.4em;
+        color: #28a745;
+        font-weight: bold;
+        margin: 15px 0;
+    }
+
+    .course-btn {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .course-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .course-btn.disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+    }
+</style>
+
+<div class="container3 mt-5">
+    <h2 class="text-center">Servicio de {{ category|title }}</h2>
+    <div class="row-courses">
+        {% for curso in courses %}
+        <div class="course-container">
+            <img src="{{ curso.imageURL }}" alt="Imagen del curso {{ curso.name }}" class="course-image">
+            <h2 class="course-title">{{ curso.name }}</h2>
+            <p class="course-description">{{ curso.description }}</p>
+            <div class="course-info">
+                <!-- <p><strong>Conductor:</strong> {{ curso.teacher }}</p> -->
+                <p><strong>Modelo:</strong>{{curso.modelo}}</p>
+                <p><strong>Placa:</strong> {{ curso.placa }}</p>
+                <p><strong>Rating:</strong> {{ curso.rating }}</p> <!-- Mostrar emojis -->
+                <!-- <p><strong>Capacidad:</strong> {{ curso.enrolled_students }}/{{ curso.capacity }}</p> -->
+                <p><strong>Viajes:</strong>{{ curso.total_enrolled_students}}</p>
+            </div>
+            <p class="course-price">Q {{ curso.price }}</p>
+            {% if curso.id in enrolled_courses %}
+            <button class="course-btn" disabled>Ya matriculado</button>
+            {% elif curso.is_full %}
+            <button class="course-btn" disabled>Curso lleno</button>
+            {% else %}
+            <a href="{% url 'enroll_in_course' curso.id %}">
+                <button class="course-btn">Tomar Viaje</button>
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
