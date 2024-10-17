@@ -3,7 +3,7 @@
 <html lang="es">
 
 <head>
-    <link rel="icon" href="{% static 'img/taxi-logo.png' %}" type="image/png">
+    <link rel="icon" href="{% static 'img/Iconos/taxi-logo.png' %}" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <title>Tienda de Taxis</title>
@@ -18,6 +18,7 @@
     <!-- Custom JS -->
     <script src="{% static 'js/script.js' %}" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         .harlow {
             font-family: 'Great Vibes', cursive;
@@ -26,7 +27,7 @@
 </head>
 <style>
     body {
-        background-image: url("{% static 'img/fondo.jpg' %}");
+        background-image: url("{% static 'img/Fondo/fondo.jpg' %}");
         background-repeat: repeat; /* Hace que la imagen se repita en todo el fondo */
         background-size: auto; /* Usa el tamaño original de la imagen */
         background-position: top left; /* Comienza la repetición desde la esquina superior izquierda */
@@ -36,7 +37,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'paginaprincipal' %}">
-                <img src="{% static 'img/taxi-logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="Logo Tienda de Taxis">
+                <img src="{% static 'img/Iconos/taxi-logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="Logo Tienda de Taxis">
                 <span class="harlow">Pochito's Taxi</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

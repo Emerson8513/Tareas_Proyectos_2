@@ -1,13 +1,12 @@
 {% extends 'generales/main.html' %}
 {% block content %}
-
 <style>
     h1 {
-    text-align: center;
-    margin-top: 20px;
-    color: #323b46;
-    font-size: 2.5em;
-    font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+        color: #323b46;
+        font-size: 2.5em;
+        font-weight: bold;
     }
 
     .course-details {
@@ -16,26 +15,35 @@
         border-radius: 8px;
         margin-bottom: 20px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
     }
 
-    .course-details img {
+    .course-info-container {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        margin-right: 20px;
+    }
+
+    .course-info-container img {
         max-width: 100%;
         height: auto;
         border-radius: 8px;
     }
 
-    .course-details h2 {
+    .course-info-container h2 {
         color: #242c34;
         font-size: 2em;
         margin-bottom: 10px;
     }
 
-    .course-details p {
+    .course-info-container p {
         font-size: 1.2em;
         color: #6c757d;
     }
 
-    .course-details .course-info p {
+    .course-info-container .course-info p {
         margin: 5px 0;
     }
 
@@ -54,30 +62,149 @@
     .enroll-btn:hover {
         background-color: #0056b3;
     }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #242c34;
+    }
+
+    .form-group input {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .map-container {
+        width: 50%;
+        margin-left: 20px;
+    }
+
+    .map-container iframe {
+        width: 100%;
+        height: 450px;
+        border: 0;
+        border-radius: 8px;
+    }
+
+    #map {
+        width: 100%;
+        height: 450px;
+        border-radius: 8px;
+    }
 </style>
 
 <h1>Solicitud de servicio</h1>
-
 <!-- Detalles del curso -->
 <div class="course-details">
-    <img src="{{ course.imageURL }}" alt="Imagen del curso {{ course.name }}">
-    <h2>{{ course.name }}</h2>
-    <p>{{ course.description }}</p>
-    <div class="course-info">
-        <p><strong>Instructor:</strong> {{ course.teacher }}</p>
-        <p><strong>Duración:</strong> {{ course.duration }} Dependiendo de ruta</p>
-        <p><strong>Precio:</strong> Q {{ course.price }} Aprox</p>
-        <p><strong>Placa:</strong> {{ course.placa }}</p>
+    <div class="course-info-container">
+        <img src="{{ course.imageURL }}" alt="Imagen del curso {{ course.name }}">
+        <h2>{{ course.name }}</h2>
+        <p>{{ course.description }}</p>
+        <div class="course-info">
+            <p><strong>Conductor:</strong> {{ course.teacher }}</p>
+            <p><strong>Servicio:</strong> {{ course.category|title }}</p>
+            <p><strong>Vehículo:</strong> {{ course.modelo }}</p>
+            <p><strong>Placa:</strong> {{ course.placa }}</p>
+        </div>
+        <!-- Formulario de matriculación -->
+        <form method="post" id="enrollmentForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-group">
+                <label for="start_location">Inicio de viaje:</label>
+                <input type="text" id="start_location" name="start_location" required>
+            </div>
+            <div class="form-group">
+                <label for="end_location">Destino de viaje:</label>
+                <input type="text" id="end_location" name="end_location" required>
+            </div>
+            <button type="submit" class="enroll-btn">Confirmar servicio</button>
+        </form>
+    </div>
+    <div class="map-container">
+        <div id="map"></div>
     </div>
 </div>
 
-<!-- Formulario de matriculación -->
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+<script>
+    let map;
+    let startMarker, endMarker;
+    let geocoder; // Mover la declaración de geocoder aquí
 
-    <!-- Botón para confirmar la matriculación -->
-    <button type="submit" class="enroll-btn">Confirmar servicio</button>
-</form>
+    document.getElementById('enrollmentForm').addEventListener('submit', function (event) {
+        var startLocation = document.getElementById('start_location').value;
+        var endLocation = document.getElementById('end_location').value;
 
+        if (!startLocation || !endLocation) {
+            alert('Por favor, complete ambos campos: Inicio de viaje y Destino de viaje.');
+            event.preventDefault(); // Evita que el formulario se envíe
+        }
+    });
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: 14.6698, lng: -90.5352 },
+            zoom: 13,
+        });
+
+        // Inicializar geocoder dentro de initMap
+        geocoder = new google.maps.Geocoder();
+
+        // Listener para clics en el mapa
+        map.addListener('click', function (event) {
+            placeMarker(event.latLng);
+        });
+    }
+
+    // Función para colocar los marcadores y obtener las direcciones
+    function placeMarker(location) {
+        if (!startMarker) {
+            startMarker = new google.maps.Marker({
+                position: location,
+                map: map,
+                label: 'Inicio',
+            });
+            geocodeLatLng(location, 'start_location');
+        } else if (!endMarker) {
+            endMarker = new google.maps.Marker({
+                position: location,
+                map: map,
+                label: 'Destino',
+            });
+            geocodeLatLng(location, 'end_location');
+        } else {
+            // Si ambos marcadores ya están colocados, se reinician
+            startMarker.setPosition(location);
+            geocodeLatLng(location, 'start_location');
+            endMarker.setMap(null);
+            endMarker = null;
+        }
+    }
+
+    // Función para convertir latitud y longitud en dirección
+    function geocodeLatLng(latlng, inputId) {
+        geocoder.geocode({ location: latlng }, function (results, status) {
+            if (status === "OK") {
+                if (results[0]) {
+                    document.getElementById(inputId).value = results[0].formatted_address;
+                } else {
+                    alert("No se encontraron resultados.");
+                }
+            } else {
+                alert("Geocoder falló debido a: " + status);
+            }
+        });
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbbu_Kihxw-PqZ-RL6y8AWr1nuLSbmDtQ&callback=initMap" async
+    defer></script>
 {% endblock %}

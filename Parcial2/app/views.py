@@ -4,33 +4,28 @@ import numpy as np
 import base64
 import os
 import pdfkit
-from django.shortcuts import render, redirect, get_object_or_404
+import re
+import requests
+from datetime import timedelta
+from django import forms
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import PermissionDenied
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.mail import send_mail
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
+from django.utils import timezone
+from django.utils.http import urlsafe_base64_decode
 from .models import *
 from .forms import EnrollmentForm
-from django.contrib import messages
-from django.contrib.auth.models import User
-from datetime import timedelta
-from django.utils import timezone
-import re
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from django.http import JsonResponse
-from django.core.files.base import ContentFile
-from django.core.mail import send_mail
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_decode
-from django.conf import settings
-from django.http import JsonResponse, HttpResponse
-from django.core.files.base import ContentFile
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.core.exceptions import PermissionDenied
-
-
-
-
-
+from weasyprint import HTML
 
 MAX_FAILED_ATTEMPTS = 3
 LOCKOUT_TIME = timedelta(minutes=30)  # Bloquear por 30 minutos
@@ -76,42 +71,53 @@ def portafolio(request):
     context = {}
     return render(request,'generales/portafolio.html',context)
 
-from django.shortcuts import render, redirect
-from .models import Student
-from django.contrib.auth.models import User
-from django.contrib import messages
 
-# views.py
-import face_recognition
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 def register(request):
     if request.method == 'POST':
-        name = request.POST['name']
-        lastname = request.POST['lastname']
-        dpi = request.POST['DPI']
-        date = request.POST['date']
-        telephone = request.POST['telephone']
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['pwd']
-        password_check = request.POST['pwd-repeat']
-        face_image = request.FILES.get('face_image')  # Nueva línea para obtener la imagen
+        # Crea el formulario con los datos enviados
+        form = request.POST
 
+        name = form.get('name')
+        lastname = form.get('lastname')
+        dpi = form.get('DPI')
+        date = form.get('date')
+        telephone = form.get('telephone')
+        username = form.get('username')
+        email = form.get('email')
+        password = form.get('pwd')
+        password_check = form.get('pwd-repeat')
+        face_image = request.FILES.get('face_image')
+
+        # Validación de reCAPTCHA
+        recaptcha_response = form.get('g-recaptcha-response')
+        data = {
+            'secret': settings.RECAPTCHA_PRIVATE_KEY,
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+
+        if not result.get('success'):
+            messages.error(request, 'Por favor, confirma que no eres un robot.')
+            return render(request, 'generales/register.html', {'form': form})
+
+        # Validación de contraseñas
         if password != password_check:
             messages.error(request, 'Las contraseñas no coinciden.')
-            return render(request, 'generales/register.html', {...})
+            return render(request, 'generales/register.html', {'form': form})
 
+        # Validar si el nombre de usuario ya existe
         if User.objects.filter(username=username).exists():
             messages.error(request, 'El nombre de usuario ya está en uso. Por favor elija otro.')
-            return render(request, 'generales/register.html', {...})
+            return render(request, 'generales/register.html', {'form': form})
 
+        # Crear el usuario
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
 
-        # Procesamiento del reconocimiento facial
+        # Procesamiento de la imagen facial
         if face_image:
-            # Convertir la imagen en un formato adecuado para face_recognition
             image = face_recognition.load_image_file(face_image)
             face_encodings = face_recognition.face_encodings(image)
 
@@ -119,15 +125,16 @@ def register(request):
                 face_encoding = face_encodings[0]
             else:
                 messages.error(request, 'No se detectó ningún rostro en la imagen proporcionada.')
-                return render(request, 'generales/register.html', {...})
+                return render(request, 'generales/register.html', {'form': form})
 
-        # Guardar el perfil con el encoding facial
+        # Guardar el perfil del usuario
         user_profile = UserProfile.objects.create(
             user=user,
             face_encoding=face_encoding.tobytes() if face_encodings else None
         )
         user_profile.save()
 
+        # Guardar los datos del estudiante
         student = Student.objects.create(
             name=name,
             lastname=lastname,
@@ -143,19 +150,19 @@ def register(request):
         messages.success(request, 'Registro exitoso.')
         return redirect('paginaprincipal')
 
-    return render(request, 'generales/register.html')
+    else:
+        form = {}  # Si la solicitud es GET, define un formulario vacío
+
+    return render(request, 'generales/register.html', {'form': form})
 
 
-# views.py
-from django.shortcuts import render
-from .models import Course
 
 def cursos(request):
     categories = [
-        {'name': 'taxi', 'image': 'img/car-big.png'},
-        {'name': 'motoraton', 'image': 'img/motoraton.png'},
-        {'name': 'tuctuc', 'image': 'img/tuc-tuc.png'},
-        {'name': 'mudanza', 'image': 'img/mudanza.png'},
+        {'name': 'taxi', 'image': 'img/Servicios/car-big.png'},
+        {'name': 'motoraton', 'image': 'img/Servicios/motoraton.png'},
+        {'name': 'tuctuc', 'image': 'img/Servicios/tuc-tuc.png'},
+        {'name': 'mudanza', 'image': 'img/Servicios/mudanza.png'},
     ]
     context = {'categories': categories}
     return render(request, 'generales/cursos.html', context)
@@ -168,16 +175,32 @@ def cursos_por_categoria(request, category):
 
 ##############################33
 
+
 def login_view(request):
+    form = {}  # Inicializar la variable form
+
     if request.method == 'POST':
+        form = request.POST
         username = request.POST['username']
         password = request.POST['password']
+        
+        # Validación de reCAPTCHA
+        recaptcha_response = form.get('g-recaptcha-response')
+        data = {
+            'secret': settings.RECAPTCHA_PRIVATE_KEY,
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if not result.get('success'):
+            messages.error(request, 'Por favor, confirma que no eres un robot.')
+            return render(request, 'generales/login.html', {'form': form})
 
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             messages.error(request, 'Usuario no encontrado.')
-            return render(request, 'generales/login.html')
+            return render(request, 'generales/login.html', {'form': form})
 
         # Obtener o crear el perfil del usuario
         profile, created = UserProfile.objects.get_or_create(user=user)
@@ -188,7 +211,7 @@ def login_view(request):
             profile.unlock()
             if profile.is_locked:
                 messages.error(request, 'Tu cuenta está bloqueada. Intenta más tarde.')
-                return render(request, 'generales/login.html')
+                return render(request, 'generales/login.html', {'form': form})
 
         # Autenticar al usuario
         user = authenticate(request, username=username, password=password)
@@ -212,7 +235,7 @@ def login_view(request):
                 messages.error(request,f'Despues de 3 Intentos su cuenta sera bloqueada')
             profile.save()
 
-    return render(request, 'generales/login.html')
+    return render(request, 'generales/login.html', {'form': form})
 
 def logout_view(request):
     logout(request)  
@@ -220,16 +243,29 @@ def logout_view(request):
     return redirect('login')  
 
 def login_view_teacher(request):
+    form = {}  # Inicializar la variable form
     if request.method == 'POST':
+        form = request.POST
         username = request.POST['username']  # El nombre de usuario proporcionado en el formulario
         password = request.POST['password']  # La contraseña proporcionada
+        # Validación de reCAPTCHA
+        recaptcha_response = form.get('g-recaptcha-response')
+        data = {
+            'secret': settings.RECAPTCHA_PRIVATE_KEY,
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if not result.get('success'):
+            messages.error(request, 'Por favor, confirma que no eres un robot.')
+            return render(request, 'generales/loginteacher.html', {'form': form})
 
         try:
             # Verificar si el usuario (docente) existe buscando por el nombre de usuario vinculado a User
             teacher = Teacher.objects.get(user__username=username)
         except Teacher.DoesNotExist:
             messages.error(request, 'El docente no existe.')
-            return render(request, 'generales/loginteacher.html')
+            return render(request, 'generales/loginteacher.html', {'form': form})
 
         # Autenticar al usuario usando el sistema de autenticación de Django
         user = authenticate(request, username=username, password=password)
@@ -244,7 +280,7 @@ def login_view_teacher(request):
         else:
             messages.error(request, 'Contraseña incorrecta.')
 
-    return render(request, 'generales/loginteacher.html')
+    return render(request, 'generales/loginteacher.html', {'form': form})
 
 
 def some_view(request):
@@ -268,48 +304,64 @@ def some_view(request):
 
 @login_required
 def enroll_in_course(request, course_id):
-    student = get_object_or_404(Student, username=request.user)  # Buscamos el estudiante asociado al usuario actual
-    course = get_object_or_404(Course, id=course_id)  # Obtenemos el curso seleccionado
-    
+    student = get_object_or_404(Student, username=request.user)
+    course = get_object_or_404(Course, id=course_id)
+
     # Verificamos si el estudiante ya está inscrito en el curso
     enrollment = Enrollment.objects.filter(student=student, course=course).first()
     if enrollment:
         if enrollment.is_active:
-            messages.warning(request, 'Ya estás inscrito en este curso.')
-            return redirect('course_list')  # Redirigimos a la lista de cursos
+            messages.warning(request, 'Ya estás inscrito en este servicio.')
+            return redirect('course_list')
         else:
             enrollment.is_active = True
             enrollment.save()
             course.enrolled_students += 1
             course.total_enrolled_students += 1
             course.save()
-            messages.success(request, 'Te has matriculado nuevamente en el curso.')
-            return redirect('my_courses')  # Redirigimos a la página donde se muestran los cursos matriculados
-    
+
+            # Enviar correo de confirmación
+            send_confirmation_email(student, course)
+
+            messages.success(request, 'Te has matriculado nuevamente en el servicio.')
+            return redirect('my_courses')
+
     # Verificamos si el curso está lleno
     if course.is_full:
-        messages.error(request, 'Lo sentimos, el curso está lleno.')
-        return redirect('course_list')  # Redirige a la lista de cursos si el curso está lleno
+        messages.error(request, 'Lo sentimos, el servicio está lleno.')
+        return redirect('course_list')
     
     if request.method == 'POST':
         form = EnrollmentForm(request.POST)
         if form.is_valid():
             enrollment = form.save(commit=False)
             enrollment.student = student
-            enrollment.course = course  # Asegúrate de asignar el curso a la matrícula
+            enrollment.course = course
+
+            # Guardar los datos de inicio y destino del viaje
+            enrollment.start_location = request.POST.get('start_location')
+            enrollment.end_location = request.POST.get('end_location')
+
             enrollment.save()
             
-            # Actualizamos el número de estudiantes inscritos
             course.enrolled_students += 1
-            course.total_enrolled_students += 1  # Asegúrate de incrementar también el total
-            course.save()  # Guardamos los cambios en el curso
+            course.total_enrolled_students += 1
+            course.save()
 
-            messages.success(request, 'Te has matriculado exitosamente en el curso.')
-            return redirect('my_courses')  # Redirigimos a la página donde se muestran los cursos matriculados
+            # Enviar correo de confirmación
+            send_confirmation_email(student, course,enrollment)
+
+            messages.success(request, 'Te has matriculado exitosamente en el servicio.')
+            return redirect('my_courses')
+        else:
+            # Imprime los errores para depurar
+            print(form.errors)
+            messages.error(request, 'Hubo un problema al procesar el formulario.')
     else:
         form = EnrollmentForm(initial={'course': course})
     
     return render(request, 'generales/enroll.html', {'form': form, 'course': course})
+
 
 
 
@@ -343,7 +395,6 @@ def my_courses(request):
     })
 
 
-# views.py
 
 @login_required
 def unenroll_course(request, course_id):
@@ -368,9 +419,9 @@ def unenroll_course(request, course_id):
             course.enrolled_students -= 1
             course.save()  
 
-        messages.success(request, f'Te has desmatriculado del curso "{course.name}".')
+        messages.success(request, f'Servicio Cancelado "{course.name}".')
     else:
-        messages.error(request, f'No estás matriculado en el curso "{course.name}".')
+        messages.error(request, f'No tienes el servicio "{course.name}".')
 
     return redirect('my_courses')
 
@@ -384,64 +435,28 @@ def get_stored_image_path(username):
     return os.path.join(path, f"{username}.png")
 
 def login_with_face(request):
-    if request.method == 'POST':
-        # Obtener datos de la imagen y el nombre de usuario
-        image_data = request.POST.get('image')
-        username = request.POST.get('username')
-        
-        # Asegúrate de que la imagen se reciba correctamente
-        if not image_data or not username:
-            return JsonResponse({'error': 'No se recibió la imagen o el nombre de usuario.'})
-
-        # Procesar la imagen aquí (opcionalmente, almacénala)
-        # Eliminar el prefijo 'data:image/jpeg;base64,' del dataUrl
-        image_data = image_data.split(',')[1]  # Extraer solo los datos base64
-        image_data = base64.b64decode(image_data)  # Decodificar la imagen
-
-        # Guardar la imagen en el directorio especificado
-        image_path = f'statics/img/face_images/{username}.jpg'
-        with open(image_path, 'wb') as img_file:
-            img_file.write(image_data)
-
-        return JsonResponse({'message': 'Foto recibida y almacenada.'})
-
     return render(request, 'generales/login_with_face.html')
 
-def send_confirmation_email(request):
-    if request.method == "POST":
-        # Obtén el estudiante a partir del usuario autenticado
-        try:
-            student = Student.objects.get(username=request.user)
-        except Student.DoesNotExist:
-            return JsonResponse({'error': 'No se encontró el estudiante relacionado con este usuario.'})
+def send_confirmation_email(student, course, enrollment):
+    """
+    Función auxiliar para enviar un correo de confirmación de matrícula.
+    """
+    subject = "Confirmación de Matrícula"
+    message = f"Estimado {student.username},\n\nTu servicio se ha procesado exitosamente!!:.\n\n"
+    message += f"Detalles del Servicio:\nConductor: {course.teacher}\nVehículo: {course.modelo} (Placa: {course.placa})\n"
+    message += f"Inicio del Viaje: {enrollment.start_location}\nDestino del Viaje: {enrollment.end_location}\n\n"
+    message += "Gracias por confiar en nosotros. ¡Que tengas un excelente día!"
+    
+    from_email = 'noreply@tudominio.com'  # Cambia esto al correo que estés utilizando para enviar
+    recipient_list = [student.email]
 
-        # Obtén los cursos matriculados para el estudiante
-        enrolled_courses = Enrollment.objects.filter(student=student)
-
-        # Verifica si el estudiante tiene cursos matriculados
-        if enrolled_courses.exists():
-            courses_list = ', '.join([enrollment.course.name for enrollment in enrolled_courses])
-            subject = "Confirmación de Matrícula"
-            message = f"Estás matriculado en los siguientes cursos: {courses_list}"
-            from_email = 'noreply@tudominio.com'  # Remitente ficticio
-
-            # Enviar correo
-            send_mail(subject, message, from_email, [student.email])  # Envía el correo al email del estudiante
-
-            return JsonResponse({'message': 'Correo enviado correctamente.'})
-        else:
-            return JsonResponse({'error': 'No tienes cursos matriculados.'})
-
-    return JsonResponse({'error': 'Método no permitido.'})
+    send_mail(subject, message, from_email, recipient_list)
 
 
 def password_reset(request):
     context = {}
     return render(request,'generales/password_reset.html',context)
 
-
-
-##################
 
 
 def set_username_password(request, uidb64, token):
@@ -480,6 +495,9 @@ def teacher_panel(request):
         raise PermissionDenied("No tienes permiso para acceder a esta página.")
 
     enrollments = Enrollment.objects.filter(course__teacher=teacher)
+
+    for enrollment in enrollments:
+        print(f"Enrollment ID: {enrollment.id}, Start Location: {enrollment.start_location}, End Location: {enrollment.end_location}")
 
     if request.method == 'POST':
         # Asignar notas a los estudiantes
@@ -529,29 +547,28 @@ def teacher_panel(request):
         'enrollment_history': enrollment_history
     })
 
+# def generate_pdf_report(request):
+#     teacher = get_object_or_404(Teacher, user=request.user)
+#     enrollments = Enrollment.objects.filter(course__teacher=teacher)
 
-def generate_pdf_report(request):
-    teacher = get_object_or_404(Teacher, user=request.user)
-    enrollments = Enrollment.objects.filter(course__teacher=teacher)
+#     context = {
+#         'enrollments': enrollments,
+#         'teacher': teacher,
+#         'base_url': request.build_absolute_uri('/')  # Obtener la URL base (http://127.0.0.1:8000/)
+#     }
+#     html = render_to_string('generales/pdf_report_template.html', context)
 
-    context = {
-        'enrollments': enrollments,
-        'teacher': teacher,
-        'base_url': request.build_absolute_uri('/')  # Obtener la URL base (http://127.0.0.1:8000/)
-    }
-    html = render_to_string('generales/pdf_report_template.html', context)
+#     config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')  # O sin ruta si está en PATH
 
-    config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')  # O sin ruta si está en PATH
+#     try:
+#         pdf = pdfkit.from_string(html, False, configuration=config)
+#     except Exception as e:
+#         messages.error(request, f'Error al generar PDF: {e}')
+#         return redirect('teacher_panel')
 
-    try:
-        pdf = pdfkit.from_string(html, False, configuration=config)
-    except Exception as e:
-        messages.error(request, f'Error al generar PDF: {e}')
-        return redirect('teacher_panel')
-
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="reporte_alumnos.pdf"'
-    return response
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = 'attachment; filename="reporte_alumnos.pdf"'
+#     return response
 
 
 @login_required
@@ -580,3 +597,29 @@ def student_dashboard(request):
         'enrolled_courses': enrolled_courses,
         'enrollment_history': enrollment_history,
     })
+
+def rutas(request):
+    return render(request, 'generales/rutas.html')
+
+
+@login_required
+def generate_pdf(request):
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+    except Teacher.DoesNotExist:
+        raise PermissionDenied("No tienes permiso para acceder a esta página.")
+
+    # Obtener el historial de inscripciones del docente
+    enrollment_history = EnrollmentHistory.objects.filter(teacher=teacher)
+
+    # Renderiza la plantilla HTML con el contexto
+    html_string = render_to_string('generales/teacher_panel_pdf.html', {'enrollment_history': enrollment_history})
+
+    # Convierte el HTML a PDF
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf()
+
+    # Devuelve el PDF como respuesta HTTP
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="historial_servicios.pdf"'
+    return response

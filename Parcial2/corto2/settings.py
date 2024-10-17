@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app.apps.AppConfig',
     'axes',
+    'django_recaptcha',
+    'logs',
+    'profiles',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -158,3 +162,7 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='emersonjohann@gmail.com')
+
+# Captcha
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY')

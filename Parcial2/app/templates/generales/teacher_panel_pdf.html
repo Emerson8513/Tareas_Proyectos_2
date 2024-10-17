@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+
+    <style>
+        body {
+            background-image: url("{% static 'img/Fondo/fondo.jpg' %}");
+            background-repeat: repeat;
+            /* Hace que la imagen se repita en todo el fondo */
+            background-size: auto;
+            /* Usa el tamaño original de la imagen */
+            background-position: top left;
+            /* Comienza la repetición desde la esquina superior izquierda */
+        }
+
+        h1,
+        h2 {
+            color: #333;
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            color: #555;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-pdf {
+            background-color: #008CBA;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-pdf:hover {
+            background-color: #007bb5;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 10px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Historial de servicios</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Teléfono</th>
+                <th>Fecha de servicio</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for history in enrollment_history %}
+            <tr>
+                <td>{{ history.student.name }} {{ history.student.lastname }}</td>
+                <td>{{ history.student.telefhone }}</td>
+                <td>{{ history.expulsion_date }}</td>
+                <td>{{ history.grade }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay historial de servicios.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

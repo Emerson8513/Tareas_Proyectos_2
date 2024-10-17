@@ -50,15 +50,15 @@
 
     /* Secciones con imágenes de fondo */
     #section1 {
-        background-image: url("{% static 'img/taxis.jfif' %}");
+        background-image: url("{% static 'img/Fondo/taxis.jfif' %}");
     }
 
     #section2 {
-        background-image: url("{% static 'img/taxis3.jpg' %}");
+        background-image: url("{% static 'img/Fondo/taxis3.jpg' %}");
     }
     
     #section3 {
-        background-image: url("{% static 'img/taxis2.jpg' %}");
+        background-image: url("{% static 'img/Fondo/taxis2.jpg' %}");
     }
 
     /* Estilos adicionales para el contenido */
@@ -221,25 +221,25 @@
     <button class="prev-btn"><</button>
     <div class="card-container">
         <div class="card">
-            <img src="{% static 'img/zona 1-16.png' %}" alt="Ruta 1">
+            <img src="{% static 'img/Rutas/zona 1-16.png' %}" alt="Ruta 1">
             <h3>Ruta Zona 1 a Zona 16</h3>
             <p>Viaje cómodo desde el centro hasta la zona norte de la ciudad.</p>
             <p class="service-price">Q 50.00</p>
         </div>
         <div class="card">
-            <img src="{% static 'img/aereo.png' %}" alt="Ruta 2">
+            <img src="{% static 'img/Rutas/aereo.png' %}" alt="Ruta 2">
             <h3>Ruta Aeropuerto</h3>
             <p>Servicio directo al Aeropuerto Internacional La Aurora.</p>
             <p class="service-price">Q 80.00</p>
         </div>
         <div class="card">
-            <img src="{% static 'img/zona 15.png' %}" alt="Ruta 3">
+            <img src="{% static 'img/Rutas/zona 15.png' %}" alt="Ruta 3">
             <h3>Ruta Express Zona 15</h3>
             <p>Llegada rápida a los principales centros comerciales de la zona 15.</p>
             <p class="service-price">Q 60.00</p>
         </div>
         <div class="card">
-            <img src="{% static 'img/peten.png' %}" alt="Ruta 4">
+            <img src="{% static 'img/Rutas/peten.png' %}" alt="Ruta 4">
             <h3>Ruta Sur a Norte</h3>
             <p>Conexión desde el sur hasta el norte de la ciudad sin escalas.</p>
             <p class="service-price">Q 75.00</p>
@@ -248,7 +248,7 @@
     <button class="next-btn">></button>
 </div>
 
-        <a href="{% url 'cursos' %}" class="btn btn-warning mt-3">Ver todas las rutas</a>
+        <a href="{% url 'rutas' %}" class="btn btn-warning mt-3">Ver todas las rutas</a>
     </div>
 </div>
 
@@ -258,11 +258,28 @@
         <h2>Contáctanos</h2>
         <p>Estamos aquí para atenderte las 24 horas. Reserva tu taxi hoy mismo.</p>
         <!-- Imagen con efecto de aparición -->
-        <img src="{% static 'img/taxi-logo.png' %}" alt="Contáctanos" class="image-appear" style="width: 15%; max-width: 400px;">
+        <img src="{% static 'img/Iconos/taxi-logo.png' %}" alt="Contáctanos" class="image-appear" style="width: 15%; max-width: 400px;">
     </div>
 </div>
 
 <script>
+    //#########################################################################################
+    document.addEventListener('DOMContentLoaded', function () {
+        const infoBox = document.querySelector('.info-box');
+        const section1 = document.getElementById('section1');
+
+        function checkVisibility() {
+            const section1Rect = section1.getBoundingClientRect();
+            if (section1Rect.top < window.innerHeight && section1Rect.bottom >= 0) {
+            section1.querySelector('.section-content').classList.add('show-info');
+            }
+        }
+
+        window.addEventListener('scroll', checkVisibility);
+        checkVisibility(); // Check visibility on page load
+    });
+    //#########################################################################################
+
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
     const cardContainer = document.querySelector('.card-container');

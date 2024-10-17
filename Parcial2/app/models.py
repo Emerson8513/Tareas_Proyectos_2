@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import User
-
+from django import forms
 from django.db import models
 
 class Teacher(models.Model):
@@ -45,14 +45,15 @@ class Course(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     modelo = models.CharField(max_length=50, default='N/A')
     placa = models.CharField(max_length=10, default='N/A')
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(null=True, blank=True)
     rating = models.CharField(max_length=10, blank=True, null=True)
     capacity = models.IntegerField(default=1)
     enrolled_students = models.IntegerField(default=0)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='taxi')
     total_enrolled_students = models.IntegerField(default=0)  # Nuevo campo
-
+    start_location = models.CharField(max_length=255, null=True, blank=True)  # Nuevo campo
+    end_location = models.CharField(max_length=255, null=True, blank=True)    # Nuevo campo
     class Meta:
         verbose_name = "Servicio"
         verbose_name_plural = "Servicios"
@@ -123,6 +124,8 @@ class Enrollment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     enrollment_date = models.DateTimeField(default=timezone.now)
     grade = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)  # Agregar campo para notas
+    start_location = models.CharField(max_length=255, null=True, blank=True)
+    end_location = models.CharField(max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=True)  # Agregar campo para desactivar matrícula
 
     class Meta:
@@ -132,7 +135,13 @@ class Enrollment(models.Model):
         return f"{self.student.name} - {self.course.name}"
     
 
-
+class EnrollmentForm(forms.ModelForm):
+    class Meta:
+        model = Enrollment
+        fields = ['start_location', 'end_location', 'course']
+        widgets = {
+            'course': forms.HiddenInput(),
+        }
 
 class EnrollmentHistory(models.Model):
     ACTION_CHOICES = [
@@ -149,3 +158,7 @@ class EnrollmentHistory(models.Model):
 
     def __str__(self):
         return f'{self.student} - {self.course} - {self.expulsion_date}'
+
+
+
+

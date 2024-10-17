@@ -3,7 +3,7 @@
 {% block content %}
 <style>
     body {
-        background-image: url('statics/img/fondo.jpg');
+        background-image: url('statics/img/Fondo/fondo.jpg');
         background-repeat: repeat; /* Hace que la imagen se repita en todo el fondo */
         background-size: auto; /* Usa el tamaño original de la imagen */
         background-position: top left; /* Comienza la repetición desde la esquina superior izquierda */
@@ -126,11 +126,11 @@
                 <!-- <p><strong>Capacidad:</strong> {{ curso.enrolled_students }}/{{ curso.capacity }}</p> -->
                 <p><strong>Viajes:</strong>{{ curso.total_enrolled_students}}</p>
             </div>
-            <p class="course-price">Q {{ curso.price }}</p>
+            <!-- <p class="course-price">Q {{ curso.price }}</p> -->
             {% if curso.id in enrolled_courses %}
-            <button class="course-btn" disabled>Ya matriculado</button>
+            <button class="course-btn" disabled>Servicio Actual</button>
             {% elif curso.is_full %}
-            <button class="course-btn" disabled>Curso lleno</button>
+            <button class="course-btn" disabled>Viaje en Curso</button>
             {% else %}
             <a href="{% url 'enroll_in_course' curso.id %}">
                 <button class="course-btn">Tomar Viaje</button>

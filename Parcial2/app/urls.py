@@ -26,6 +26,8 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='generales/password_reset_complete.html'), name='password_reset_complete'),
     path('set_username_password/<uidb64>/<token>/', views.set_username_password, name='set_username_password'),
     path('teacher_panel/', views.teacher_panel, name='teacher_panel'),
-    path('generate_pdf_report/', views.generate_pdf_report, name='generate_pdf_report'),
+    # path('generate_pdf_report/', views.generate_pdf_report, name='generate_pdf_report'),
     path('cursos/<str:category>/', views.cursos_por_categoria, name='cursos_por_categoria'),
+    path('rutas/', views.rutas, name='rutas'),
+    path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
 ]

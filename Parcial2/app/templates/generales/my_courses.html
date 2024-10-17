@@ -149,7 +149,7 @@
     <tbody>
         {% for enrollment in enrolled_courses %}
         <tr>
-            <td><img src="{{ enrollment.course.imageURL }}" alt="Imagen del curso {{ enrollment.course.name }}"></td>
+            <td><img src="{{ enrollment.course.imageURL }}" alt="Imagen del Conductor {{ enrollment.course.name }}"></td>
             <td>{{ enrollment.course.teacher }}</td>
             <td>{{ enrollment.course.modelo }}</td>
             <td>{{ enrollment.course.placa }}</td>
@@ -178,7 +178,7 @@
 <table class="history-list">
     <thead>
         <tr>
-            <th>Curso</th>
+            <th>Imagen</th>
             <th>Conductor</th>
             <th>Fecha del servicio</th>
             <th>Tipo de Acción</th>
@@ -188,14 +188,15 @@
     <tbody>
         {% for history in enrollment_history %}
         <tr>
-            <td>{{ history.course.name }}</td>
+            <td><img src="{{ history.teacher.imageURL }}" alt="Imagen del Conductor {{ history.teacher.name }}"
+                    style="width: 100px; height: auto;"></td>
             <td>{{ history.teacher.name }}</td>
             <td>{{ history.expulsion_date }}</td>
             <td>
                 {% if history.action_type == 'cobro' %}
-                Expulsión/Cobro
+                Cobro
                 {% else %}
-                Desmatriculación
+                Servicio Cancelado
                 {% endif %}
             </td>
             <td>{{ history.grade }}</td>

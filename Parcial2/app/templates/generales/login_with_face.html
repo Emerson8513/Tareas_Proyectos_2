@@ -2,54 +2,206 @@
 {% load static %}
 
 {% block content %}
+<style>
+    /* Mejora de estilos para centrar y ajustar los elementos */
+    #video-element {
+        display: block;
+        margin: 0 auto;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+
+    #img-element img {
+        display: block;
+        margin: 20px auto;
+        border: 2px solid #28a745;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+
+    .button-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .btn {
+        margin: 0 10px;
+    }
+
+    /* Botón de regreso en la esquina superior izquierda */
+    .btn-home {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background-color: #ffc107;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .btn-home:hover {
+        background-color: #e0a800;
+    }
+
+    /* Botón para acceder a la página del administrador en la esquina superior derecha */
+    .btn-admin {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .btn-admin:hover {
+        background-color: #0056b3;
+    }
+
+    /* Spinner para feedback visual */
+    .spinner-border {
+        display: none;
+        margin-left: 10px;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-width: 0.2em;
+    }
+
+    .loading .spinner-border {
+        display: inline-block;
+    }
+
+    #message {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 1.1em;
+    }
+</style>
+
 <div class="container">
-    <h2>Iniciar Sesión con Reconocimiento Facial</h2>
-    <video id="video" width="400" height="300" autoplay></video>
-    <button id="snap">Tomar Foto</button>
-    <canvas id="canvas" width="400" height="300" style="display:none;"></canvas>
-    <form id="form" method="post" action="{% url 'login_with_face' %}">
-        {% csrf_token %}
-        <input type="hidden" name="image" id="imageData">
-        <input type="hidden" name="username" id="username" value="{{ username }}">
-    </form>
-    <script>
-        // Acceder a la cámara
-        const video = document.getElementById('video');
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-            });
+    <h2 class="text-center mb-4">Captura tu foto para ingresar</h2>
+    
+    <!-- Botón para regresar a la página principal (esquina superior izquierda) -->
+    <a href="{% url 'cursos' %}" class="btn-home">Volver al inicio</a>
 
-        // Tomar la foto
-        document.getElementById('snap').addEventListener('click', function () {
-            const canvas = document.getElementById('canvas');
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas.toDataURL('image/jpeg');  // Cambia a 'image/jpeg' para mayor compatibilidad
-            document.getElementById('imageData').value = dataUrl;
+    <!-- Botón para ir a la página del administrador de Django (esquina superior derecha) -->
+    <a href="{% url 'admin:index' %}" class="btn-admin">Admin</a>
 
-            // Enviar la imagen al servidor usando fetch
-            fetch("{% url 'login_with_face' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded', // Cambia esto para enviar datos como formulario
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: `image=${encodeURIComponent(dataUrl)}&username=${encodeURIComponent(document.getElementById('username').value)}` // Envía datos como formulario
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log(result); // Maneja la respuesta del servidor
-                if (result.message) {
-                    alert(result.message); // Muestra un mensaje de éxito
-                } else if (result.error) {
-                    alert(result.error); // Muestra un mensaje de error
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
+    <!-- Elemento de video -->
+    <video autoplay="true" id="video-element"></video>
+
+    <!-- Elemento de imagen para mostrar la captura -->
+    <div id="img-element"></div>
+
+    <!-- Contenedor de botones -->
+    <div class="button-container">
+        {% csrf_token %} 
+        <button class="btn btn-primary" id="capture-btn">Tomar Foto</button>
+        <button class="btn btn-info" id="reload-btn">Recargar Cámara</button>
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <!-- Mensajes de estado -->
+    <div id="message"></div>
 </div>
+
+<script>
+    console.log('Hola mundo')
+
+    const getCookie = (name) => {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    const video = document.getElementById('video-element')
+    const image = document.getElementById('img-element')
+    const captureBtn = document.getElementById('capture-btn')
+    const reloadBtn = document.getElementById('reload-btn')
+
+    reloadBtn.addEventListener('click', () => {
+        window.location.reload()
+    })
+
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({video: true})
+        .then((stream) => {
+            video.srcObject = stream
+            const {height, width} = stream.getTracks()[0].getSettings()
+
+            captureBtn.addEventListener('click', e=> {
+                e.preventDefault()
+                captureBtn.classList.add('not-visible')
+                const track = stream.getVideoTracks()[0]
+                const imageCapture = new ImageCapture(track)
+                console.log(imageCapture)
+
+                imageCapture.takePhoto().then(blob => {
+                    console.log("se tomo la photo:", blob)
+                    const img = new Image(width, height)
+                    img.src = URL.createObjectURL(blob)
+                    image.append(img)
+
+                    video.classList.add('not-visible')
+
+                    const reader = new FileReader()
+
+                    reader.readAsDataURL(blob)
+                    reader.onloadend = () => {
+                        const base64data = reader.result
+                        console.log(base64data)
+
+                        const fd = new FormData()
+                        fd.append('csrfmiddlewaretoken', csrftoken)
+                        fd.append('photo', base64data)
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/classify/',
+                            enctype: 'multipart/form-data',
+                            data: fd,
+                            processData: false,
+                            contentType: false,
+                            success: (resp) => {
+                                console.log(resp)
+                                window.location.href = window.location.origin
+                            },
+                            error: (err) => {
+                                console.log(err)
+                            }
+                        })
+                    }
+                }).catch(error => {
+                    console.log('takePhoto() error: ', error);
+                });
+            });
+        })
+        .catch(error => {
+            console.log("Algo salio mal", error);
+        });
+    }
+</script>
+    
 {% endblock content %}
