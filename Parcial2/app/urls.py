@@ -30,4 +30,6 @@ urlpatterns = [
     path('cursos/<str:category>/', views.cursos_por_categoria, name='cursos_por_categoria'),
     path('rutas/', views.rutas, name='rutas'),
     path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
+    path('generate_invoice_pdf/<int:enrollment_id>/', views.generate_invoice_pdf, name='generate_invoice_pdf'),
+
 ]

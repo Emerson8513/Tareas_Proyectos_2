@@ -18,14 +18,15 @@ from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse,Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode
 from .models import *
 from .forms import EnrollmentForm
-from weasyprint import HTML
+from weasyprint import HTML, CSS
+from django.urls import reverse
 
 MAX_FAILED_ATTEMPTS = 3
 LOCKOUT_TIME = timedelta(minutes=30)  # Bloquear por 30 minutos
@@ -486,7 +487,9 @@ def set_username_password(request, uidb64, token):
     else:
         messages.error(request, 'El enlace es inválido o ha caducado.')
         return redirect('password_reset')
-    
+
+
+
 @login_required
 def teacher_panel(request):
     try:
@@ -530,6 +533,9 @@ def teacher_panel(request):
                     enrollment.course.enrolled_students -= 1  # Reducimos el número de estudiantes activos
                     enrollment.course.save()
 
+                # Enviar correo de confirmación de cobro
+                send_confirmation_email_cobro(request, enrollment)
+
                 # Una vez registrado el historial, eliminamos la matrícula
                 enrollment.delete()
 
@@ -546,6 +552,47 @@ def teacher_panel(request):
         'enrollments': enrollments,
         'enrollment_history': enrollment_history
     })
+
+@login_required
+def generate_invoice_pdf(request, enrollment_id):
+    try:
+        enrollment = Enrollment.objects.get(id=enrollment_id, course__teacher__user=request.user)
+    except Enrollment.DoesNotExist:
+        raise Http404("La inscripción no fue encontrada.")
+    
+    html_string = render_to_string('generales/generate_invoice_pdf.html', {'enrollment': enrollment})
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="invoice_{enrollment_id}.pdf"'
+    return response
+    
+
+
+
+def send_confirmation_email_cobro(request, enrollment):
+    """
+    Función auxiliar para enviar un correo de confirmación de cobro.
+    """
+    student = enrollment.student
+    course = enrollment.course
+    subject = "Confirmación de Cobro"
+    message = f"Estimado {student.username},\n\nTu servicio ha sido cobrado exitosamente.\n\n"
+    message += f"Detalles del Servicio:\nConductor: {course.teacher}\nVehículo: {course.modelo} (Placa: {course.placa})\n"
+    message += f"Fecha de Servicio: {enrollment.enrollment_date}\nInicio del Viaje: {enrollment.start_location}\nDestino del Viaje: {enrollment.end_location}\n"
+    message += f"Precio: {enrollment.grade}\n\n"
+    
+    # Debug: imprime el ID de la inscripción antes de generar el enlace
+    print(f"Generando enlace para el PDF de la inscripción con ID: {enrollment.id}")
+
+    
+    message += "Gracias por confiar en nosotros. ¡Que tengas un excelente día!"
+    
+    from_email = 'noreply@tudominio.com'
+    recipient_list = [student.email]
+
+    send_mail(subject, message, from_email, recipient_list)
 
 # def generate_pdf_report(request):
 #     teacher = get_object_or_404(Teacher, user=request.user)
@@ -623,3 +670,5 @@ def generate_pdf(request):
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="historial_servicios.pdf"'
     return response
+
+
