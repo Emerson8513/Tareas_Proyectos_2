@@ -162,3 +162,19 @@ class EnrollmentHistory(models.Model):
 
 
 
+class CustomerServiceForm(models.Model):
+    # student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    puntualidad = models.CharField(max_length=255)
+    limpieza_vehiculo = models.CharField(max_length=255)
+    asistencia_conductor = models.CharField(max_length=255)
+    conocimiento_rutas = models.CharField(max_length=255)
+    seguridad = models.CharField(max_length=255)
+    tarifas = models.CharField(max_length=255)
+    facilidad_reserva = models.CharField(max_length=255)
+    atencion_cliente = models.CharField(max_length=255)
+    comodidad_vehiculo = models.CharField(max_length=255)
+    experiencia_general = models.CharField(max_length=255)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Servicio al Cliente - {self.fecha_creacion}'

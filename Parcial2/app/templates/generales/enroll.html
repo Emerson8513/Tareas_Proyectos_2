@@ -134,10 +134,44 @@
     </div>
 </div>
 
+<h1>Solicitud de servicio</h1>
+<!-- Detalles del curso -->
+<div class="course-details">
+    <div class="course-info-container">
+        <img src="{{ course.imageURL }}" alt="Imagen del curso {{ course.name }}">
+        <h2>{{ course.name }}</h2>
+        <p>{{ course.description }}</p>
+        <div class="course-info">
+            <p><strong>Conductor:</strong> {{ course.teacher }}</p>
+            <p><strong>Servicio:</strong> {{ course.category|title }}</p>
+            <p><strong>Vehículo:</strong> {{ course.modelo }}</p>
+            <p><strong>Placa:</strong> {{ course.placa }}</p>
+        </div>
+        <!-- Formulario de matriculación -->
+        <form method="post" id="enrollmentForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-group">
+                <label for="start_location">Inicio de viaje:</label>
+                <input type="text" id="start_location" name="start_location" required>
+            </div>
+            <div class="form-group">
+                <label for="end_location">Destino de viaje:</label>
+                <input type="text" id="end_location" name="end_location" required>
+            </div>
+            <button type="submit" class="enroll-btn">Confirmar servicio</button>
+        </form>
+    </div>
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+</div>
+
 <script>
     let map;
     let startMarker, endMarker;
-    let geocoder; // Mover la declaración de geocoder aquí
+    let geocoder, autocompleteStart, autocompleteEnd;
+    let polyline; // Declarar la variable para la línea
 
     document.getElementById('enrollmentForm').addEventListener('submit', function (event) {
         var startLocation = document.getElementById('start_location').value;
@@ -155,38 +189,75 @@
             zoom: 13,
         });
 
-        // Inicializar geocoder dentro de initMap
         geocoder = new google.maps.Geocoder();
 
-        // Listener para clics en el mapa
-        map.addListener('click', function (event) {
-            placeMarker(event.latLng);
+        // Inicializar la línea (vacía al principio)
+        polyline = new google.maps.Polyline({
+            path: [],
+            geodesic: true,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            map: map
+        });
+
+        // Inicializar Autocomplete para los campos de búsqueda
+        autocompleteStart = new google.maps.places.Autocomplete(document.getElementById('start_location'));
+        autocompleteEnd = new google.maps.places.Autocomplete(document.getElementById('end_location'));
+
+        // Listener para cuando se selecciona un lugar en el campo de inicio
+        autocompleteStart.addListener('place_changed', function () {
+            var place = autocompleteStart.getPlace();
+            if (place.geometry) {
+                var location = place.geometry.location;
+                placeMarker(location, 'start');
+            } else {
+                alert('No se encontró la ubicación.');
+            }
+        });
+
+        // Listener para cuando se selecciona un lugar en el campo de destino
+        autocompleteEnd.addListener('place_changed', function () {
+            var place = autocompleteEnd.getPlace();
+            if (place.geometry) {
+                var location = place.geometry.location;
+                placeMarker(location, 'end');
+            } else {
+                alert('No se encontró la ubicación.');
+            }
         });
     }
 
     // Función para colocar los marcadores y obtener las direcciones
-    function placeMarker(location) {
-        if (!startMarker) {
-            startMarker = new google.maps.Marker({
-                position: location,
-                map: map,
-                label: 'Inicio',
-            });
-            geocodeLatLng(location, 'start_location');
-        } else if (!endMarker) {
-            endMarker = new google.maps.Marker({
-                position: location,
-                map: map,
-                label: 'Destino',
-            });
-            geocodeLatLng(location, 'end_location');
-        } else {
-            // Si ambos marcadores ya están colocados, se reinician
-            startMarker.setPosition(location);
-            geocodeLatLng(location, 'start_location');
-            endMarker.setMap(null);
-            endMarker = null;
+    function placeMarker(location, type) {
+        if (type === 'start') {
+            if (!startMarker) {
+                startMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    label: 'Inicio',
+                });
+            } else {
+                startMarker.setPosition(location);
+            }
+            map.setCenter(location);
+            drawLine();
+        } else if (type === 'end') {
+            if (!endMarker) {
+                endMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    label: 'Destino',
+                });
+            } else {
+                endMarker.setPosition(location);
+            }
+            map.setCenter(location);
+            drawLine();
         }
+
+        // Actualizar el campo de texto con la dirección formateada
+        geocodeLatLng(location, type === 'start' ? 'start_location' : 'end_location');
     }
 
     // Función para convertir latitud y longitud en dirección
@@ -203,8 +274,21 @@
             }
         });
     }
+
+    // Función para dibujar la línea entre los dos marcadores
+    function drawLine() {
+        if (startMarker && endMarker) {
+            const path = [startMarker.getPosition(), endMarker.getPosition()];
+            polyline.setPath(path); // Establecer el camino de la línea
+        }
+    }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbbu_Kihxw-PqZ-RL6y8AWr1nuLSbmDtQ&callback=initMap" async
+<!-- Incluir la API de Google Places -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbbu_Kihxw-PqZ-RL6y8AWr1nuLSbmDtQ&libraries=places&callback=initMap" async
     defer></script>
+
+
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbbu_Kihxw-PqZ-RL6y8AWr1nuLSbmDtQ&callback=initMap" async
+    defer></script> -->
 {% endblock %}

@@ -31,5 +31,6 @@ urlpatterns = [
     path('rutas/', views.rutas, name='rutas'),
     path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
     path('generate_invoice_pdf/<int:enrollment_id>/', views.generate_invoice_pdf, name='generate_invoice_pdf'),
+    path('customer_service_form/', views.feedback_create, name='customer_service_form'),
 
 ]

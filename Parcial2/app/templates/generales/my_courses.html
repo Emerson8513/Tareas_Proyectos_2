@@ -146,32 +146,32 @@
             <th>Acción</th>
         </tr>
     </thead>
-    <tbody>
-        {% for enrollment in enrolled_courses %}
-        <tr>
-            <td><img src="{{ enrollment.course.imageURL }}" alt="Imagen del Conductor {{ enrollment.course.name }}"></td>
-            <td>{{ enrollment.course.teacher }}</td>
-            <td>{{ enrollment.course.modelo }}</td>
-            <td>{{ enrollment.course.placa }}</td>
-            <td>
-                {% if enrollment.is_active %}
-                <!-- Botón de desmatriculación -->
-                <form action="{% url 'unenroll_course' enrollment.course.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-unenroll">Cancelar</button>
-                </form>
-                {% else %}
-                <span class="inactive-course">Viaje Completado</span>
-                {% endif %}
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No tienes ningun servicio activo actualmente.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<tbody>
+    {% for enrollment in enrolled_courses %}
+    {% if enrollment.is_active %}
+    <tr>
+        <td><img src="{{ enrollment.course.imageURL }}" alt="Imagen del Conductor {{ enrollment.course.name }}"></td>
+        <td>{{ enrollment.course.teacher }}</td>
+        <td>{{ enrollment.course.modelo }}</td>
+        <td>{{ enrollment.course.placa }}</td>
+        <td>
+            <form action="{% url 'unenroll_course' enrollment.course.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-unenroll">Cancelar</button>
+            </form>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="5">No tienes ningun servicio activo actualmente.</td>
+    </tr>
+    {% endif %}
+    {% empty %}
+    <tr>
+        <td colspan="5">No tienes ningun servicio activo actualmente.</td>
+    </tr>
+    {% endfor %}
+</tbody>
 
 <h2 class="section-title">Historial de servicios</h2>
 

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+        <link rel="icon" href="{% static 'img/Iconos/taxi-logo.png' %}" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Retroalimentación</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Formulario de Retroalimentación</h2>
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_puntualidad">Puntualidad</label>
+                {{ form.puntualidad }}
+                <div class="error-message">
+                    {{ form.puntualidad.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_limpieza_vehiculo">Limpieza del Vehículo</label>
+                {{ form.limpieza_vehiculo }}
+                <div class="error-message">
+                    {{ form.limpieza_vehiculo.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_asistencia_conductor">Asistencia del Conductor</label>
+                {{ form.asistencia_conductor }}
+                <div class="error-message">
+                    {{ form.asistencia_conductor.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_conocimiento_rutas">Conocimiento de las Rutas</label>
+                {{ form.conocimiento_rutas }}
+                <div class="error-message">
+                    {{ form.conocimiento_rutas.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_seguridad">Seguridad</label>
+                {{ form.seguridad }}
+                <div class="error-message">
+                    {{ form.seguridad.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_tarifas">Tarifas</label>
+                {{ form.tarifas }}
+                <div class="error-message">
+                    {{ form.tarifas.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_facilidad_reserva">Facilidad de Reserva</label>
+                {{ form.facilidad_reserva }}
+                <div class="error-message">
+                    {{ form.facilidad_reserva.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_atencion_cliente">Atención al Cliente</label>
+                {{ form.atencion_cliente }}
+                <div class="error-message">
+                    {{ form.atencion_cliente.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_comodidad_vehiculo">Comodidad del Vehículo</label>
+                {{ form.comodidad_vehiculo }}
+                <div class="error-message">
+                    {{ form.comodidad_vehiculo.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_experiencia_general">Experiencia General</label>
+                {{ form.experiencia_general }}
+                <div class="error-message">
+                    {{ form.experiencia_general.errors }}
+                </div>
+            </div>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+</body>
+
+</html>

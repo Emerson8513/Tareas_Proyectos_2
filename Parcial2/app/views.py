@@ -27,6 +27,12 @@ from .models import *
 from .forms import EnrollmentForm
 from weasyprint import HTML, CSS
 from django.urls import reverse
+from .forms import FeedbackForm
+from django.utils.html import strip_tags
+from django.core.mail import send_mail
+from django.utils.html import format_html
+from django.http import HttpRequest
+
 
 MAX_FAILED_ATTEMPTS = 3
 LOCKOUT_TIME = timedelta(minutes=30)  # Bloquear por 30 minutos
@@ -68,9 +74,6 @@ def teaching(request):
     context = {}
     return render(request,'generales/teaching.html',context)
 
-def portafolio(request):
-    context = {}
-    return render(request,'generales/portafolio.html',context)
 
 
 
@@ -315,17 +318,27 @@ def enroll_in_course(request, course_id):
             messages.warning(request, 'Ya estás inscrito en este servicio.')
             return redirect('course_list')
         else:
-            enrollment.is_active = True
-            enrollment.save()
-            course.enrolled_students += 1
-            course.total_enrolled_students += 1
-            course.save()
+            # Si la inscripción está inactiva pero el usuario quiere volver a tomar el curso
+            if request.method == 'POST':
+                # Actualizar los datos de inicio y destino del viaje
+                enrollment.start_location = request.POST.get('start_location')
+                enrollment.end_location = request.POST.get('end_location')
+                enrollment.is_active = True
+                enrollment.save()
 
-            # Enviar correo de confirmación
-            send_confirmation_email(student, course)
+                course.enrolled_students += 1
+                course.total_enrolled_students += 1
+                course.save()
 
-            messages.success(request, 'Te has matriculado nuevamente en el servicio.')
-            return redirect('my_courses')
+                # Enviar correo de confirmación
+                send_confirmation_email(student, course, enrollment)
+
+                messages.success(request, 'Te has matriculado nuevamente en el servicio.')
+                return redirect('my_courses')
+            else:
+                # Mostrar el formulario para actualizar las ubicaciones si no se ha enviado el formulario
+                form = EnrollmentForm(instance=enrollment)
+                return render(request, 'generales/enroll.html', {'form': form, 'course': course})
 
     # Verificamos si el curso está lleno
     if course.is_full:
@@ -350,7 +363,7 @@ def enroll_in_course(request, course_id):
             course.save()
 
             # Enviar correo de confirmación
-            send_confirmation_email(student, course,enrollment)
+            send_confirmation_email(student, course, enrollment)
 
             messages.success(request, 'Te has matriculado exitosamente en el servicio.')
             return redirect('my_courses')
@@ -362,6 +375,7 @@ def enroll_in_course(request, course_id):
         form = EnrollmentForm(initial={'course': course})
     
     return render(request, 'generales/enroll.html', {'form': form, 'course': course})
+
 
 
 
@@ -438,20 +452,25 @@ def get_stored_image_path(username):
 def login_with_face(request):
     return render(request, 'generales/login_with_face.html')
 
+
 def send_confirmation_email(student, course, enrollment):
     """
     Función auxiliar para enviar un correo de confirmación de matrícula.
     """
-    subject = "Confirmación de Matrícula"
-    message = f"Estimado {student.username},\n\nTu servicio se ha procesado exitosamente!!:.\n\n"
-    message += f"Detalles del Servicio:\nConductor: {course.teacher}\nVehículo: {course.modelo} (Placa: {course.placa})\n"
-    message += f"Inicio del Viaje: {enrollment.start_location}\nDestino del Viaje: {enrollment.end_location}\n\n"
-    message += "Gracias por confiar en nosotros. ¡Que tengas un excelente día!"
+    subject = "Confirmación de Servicio"
     
+    # Render the HTML template with context
+    context = {
+        'student': student,
+        'course': course,
+        'enrollment': enrollment
+    }
+    message = render_to_string('generales/send_confirmation_email.html', context)
+
     from_email = 'noreply@tudominio.com'  # Cambia esto al correo que estés utilizando para enviar
     recipient_list = [student.email]
 
-    send_mail(subject, message, from_email, recipient_list)
+    send_mail(subject, "", from_email, recipient_list, html_message=message)
 
 
 def password_reset(request):
@@ -497,7 +516,7 @@ def teacher_panel(request):
     except Teacher.DoesNotExist:
         raise PermissionDenied("No tienes permiso para acceder a esta página.")
 
-    enrollments = Enrollment.objects.filter(course__teacher=teacher)
+    enrollments = Enrollment.objects.filter(course__teacher=teacher, is_active=True)
 
     for enrollment in enrollments:
         print(f"Enrollment ID: {enrollment.id}, Start Location: {enrollment.start_location}, End Location: {enrollment.end_location}")
@@ -539,9 +558,9 @@ def teacher_panel(request):
                 # Una vez registrado el historial, eliminamos la matrícula
                 enrollment.delete()
 
-                messages.success(request, 'Estudiante cobrado y eliminado correctamente del curso.')
+                messages.success(request, 'Cliente cobrado y eliminado correctamente del Servicio.')
             except Enrollment.DoesNotExist:
-                messages.error(request, 'Inscripción no encontrada o no tienes permiso para cobrar este estudiante.')
+                messages.error(request, 'Inscripción no encontrada o no tienes permiso para cobrar este cliente.')
 
         return redirect('teacher_panel')  # Evita resubmisiones de formulario
 
@@ -552,6 +571,7 @@ def teacher_panel(request):
         'enrollments': enrollments,
         'enrollment_history': enrollment_history
     })
+
 
 @login_required
 def generate_invoice_pdf(request, enrollment_id):
@@ -567,32 +587,45 @@ def generate_invoice_pdf(request, enrollment_id):
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="invoice_{enrollment_id}.pdf"'
     return response
-    
+   
 
-
-
-def send_confirmation_email_cobro(request, enrollment):
+def send_confirmation_email_cobro(request: HttpRequest, enrollment):
     """
-    Función auxiliar para enviar un correo de confirmación de cobro.
+    Función auxiliar para enviar un correo de confirmación de cobro con formato HTML e imagen.
     """
     student = enrollment.student
     course = enrollment.course
     subject = "Confirmación de Cobro"
-    message = f"Estimado {student.username},\n\nTu servicio ha sido cobrado exitosamente.\n\n"
-    message += f"Detalles del Servicio:\nConductor: {course.teacher}\nVehículo: {course.modelo} (Placa: {course.placa})\n"
-    message += f"Fecha de Servicio: {enrollment.enrollment_date}\nInicio del Viaje: {enrollment.start_location}\nDestino del Viaje: {enrollment.end_location}\n"
-    message += f"Precio: {enrollment.grade}\n\n"
     
-    # Debug: imprime el ID de la inscripción antes de generar el enlace
-    print(f"Generando enlace para el PDF de la inscripción con ID: {enrollment.id}")
+    # Verifica si estás en un entorno de desarrollo
+    if settings.DEBUG:
+        # Usa localhost:8000 en lugar del dominio
+        domain = 'localhost:8000'
+    else:
+        # Obtiene el host real si estás en producción
+        domain = request.get_host()
 
+    # Verifica si es HTTP o HTTPS
+    protocol = 'https' if request.is_secure() else 'http'
     
-    message += "Gracias por confiar en nosotros. ¡Que tengas un excelente día!"
+    # Construir la URL completa
+    customer_service_form_url = f"{protocol}://{domain}{reverse('customer_service_form')}"
     
+    # Renderiza el template HTML con el contexto adecuado
+    context = {
+        'student': student,
+        'course': course,
+        'enrollment': enrollment,
+        'customer_service_form_url': customer_service_form_url  # Pasa la URL completa al contexto
+    }
+    message = render_to_string('generales/send_confirmation_email_cobro.html', context)
+
     from_email = 'noreply@tudominio.com'
     recipient_list = [student.email]
 
-    send_mail(subject, message, from_email, recipient_list)
+    # Envía el correo con el formato HTML
+    send_mail(subject, "", from_email, recipient_list, html_message=message)
+
 
 # def generate_pdf_report(request):
 #     teacher = get_object_or_404(Teacher, user=request.user)
@@ -672,3 +705,18 @@ def generate_pdf(request):
     return response
 
 
+def portafolio(request):
+    context = {}
+    return render(request,'generales/portafolio.html',context)
+
+
+def feedback_create(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('my_courses')  # Redirige a una página de éxito después de guardar el formulario
+    else:
+        form = FeedbackForm()
+    
+    return render(request, 'generales/customer_service_form.html', {'form': form})
