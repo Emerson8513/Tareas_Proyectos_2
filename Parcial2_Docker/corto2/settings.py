@@ -25,13 +25,14 @@ SECRET_KEY = 'django-insecure-%!0n)89t=g*v)pjw74t4oa=*($@d*g8(1gdyl==-9z^$+^+nq3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0']
+ALLOWED_HOSTS = ['192.168.1.136', 'localhost', '127.0.0.1']
+
+
 
 # Application definition
 
 INSTALLED_APPS = [
-    'adminlte3',
-    'adminlte3_theme',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'profiles',
     'widget_tweaks',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -153,25 +155,17 @@ AXES_ONLY_USER_FAILURES = True
 
 
 # Email
-# SITE_URL = 'http://127.0.0.1:8000'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-# EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-# EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+SITE_URL = 'http://127.0.0.1:8000'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-# DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='emersonjohann@gmail.com')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='emersonjohann@gmail.com')
 
-# # Captcha
-# RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY')
-# RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY')
+# Captcha
 
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER='emersonrivera100@gmail.com'
-EMAIL_HOST_PASSWORD='ziqc ecwz hdak ylan'
-DEFAULT_FROM_EMAIL='emersonjohann@gmail.com'
-RECAPTCHA_PUBLIC_KEY='6LfE0mEqAAAAAJOTLPzkz7oAPEx62DV-S7nxqf81'
-RECAPTCHA_PRIVATE_KEY='6LfE0mEqAAAAAE_cSsVSNzAFE3zRNkSHcCjZlTRT'
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY')
