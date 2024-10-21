@@ -1,0 +1,83 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Tarjeta de presentación del cliente -->
+<div class="card">
+    <div class="card-body">
+        <p class="card-text"><strong><h2>Cliente</h2></strong></p>
+        <img src="{{ student.imageURL }}" alt="Imagen de {{ student.name }}" class="card-image">
+        <h3 class="card-title">{{ student.name }} {{ student.lastname }}</h3>
+        <p class="card-text"><strong>DPI:</strong> {{ student.dpi }}</p>
+        <p class="card-text"><strong>Email:</strong> {{ student.email }}</p>
+        <p class="card-text"><strong>Teléfono:</strong> {{ student.telefhone }}</p>
+        <p class="card-text"><strong>Fecha de nacimiento:</strong> {{ student.date }}</p>
+    </div>
+</div>
+
+<br>
+
+<div class="confirm-container">
+    <form action="{% url 'my_courses' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-confirm">Panel de servicios</button>
+    </form>
+</div>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Estilos de la tarjeta */
+    .card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+        max-width: 600px;
+        padding: 20px;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .card-image {
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 15px; /* Asegura que la imagen tenga margen solo en la parte inferior */
+        display: block; /* Hace que la imagen se comporte como un bloque para centrarla */
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        margin: 10px 0;
+    }
+
+    .card-text {
+        color: #555;
+        font-size: 1rem;
+        margin: 5px 0;
+    }
+
+    .confirm-container {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .btn-confirm {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+</style>
+
+{% endblock content %}

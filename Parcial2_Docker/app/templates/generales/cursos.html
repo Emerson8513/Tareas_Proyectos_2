@@ -1,0 +1,77 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    h2 {
+        text-align: center;
+        margin-top: 20px;
+        color: #333;
+        font-size: 2.5em;
+        letter-spacing: 1px;
+    }
+
+    /* Contenedor de categorías */
+    .container3 {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .row-categories {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 20px;
+    }
+
+    .category-container {
+        background-color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        max-width: 300px;
+    }
+
+    .category-container:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .category-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .category-title {
+        font-size: 1.5em;
+        margin-top: 10px;
+        color: #007bff;
+        font-weight: bold;
+    }
+</style>
+
+
+<div class="container3 mt-5">
+    <h2 class="text-center">Servicios</h2>
+    <div class="row-categories">
+        {% for category in categories %}
+        <div class="category-container">
+            <a href="{% url 'cursos_por_categoria' category.name %}">
+                <img src="{% static category.image %}" alt="Imagen de {{ category.name }}" class="category-image">
+                <h3 class="category-title">{{ category.name|title }}</h3>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

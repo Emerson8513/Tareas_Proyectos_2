@@ -1,0 +1,93 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+h2 {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px; /* Ajusta este valor según necesites */
+    color: #333;
+    font-size: 2.5em;
+    letter-spacing: 1px;
+}
+
+    /* Contenedor de categorías */
+    .container3 {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .row-categories {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 20px;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        max-width: 300px;
+        text-decoration: none; /* Elimina subrayado del enlace */
+        color: inherit; /* Mantiene el color del texto */
+        cursor: pointer; /* Cambia el cursor para indicar que es clickeable */
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .service-price {
+        font-weight: bold;
+        color: #28a745; /* Color para el precio */
+    }
+</style>
+
+<div class="container3 mt-5">
+    <h2 class="text-center">Rutas</h2>
+    <div class="row-categories">
+        <a href="{% url 'cursos' %}" class="card">
+            <img src="{% static 'img/Rutas/zona 1-16.png' %}" alt="Ruta 1">
+            <h3>Ruta Zona 1 a Zona 16</h3>
+            <p>Viaje cómodo desde el centro hasta la zona norte de la ciudad.</p>
+            <p class="service-price">Q 50.00</p>
+        </a>
+        <a href="{% url 'cursos' %}" class="card">
+            <img src="{% static 'img/Rutas/aereo.png' %}" alt="Ruta 2">
+            <h3>Ruta Aeropuerto</h3>
+            <p>Servicio directo al Aeropuerto Internacional La Aurora.</p>
+            <p class="service-price">Q 80.00</p>
+        </a>
+        <a href="{% url 'cursos' %}" class="card">
+            <img src="{% static 'img/Rutas/zona 15.png' %}" alt="Ruta 3">
+            <h3>Ruta Express Zona 15</h3>
+            <p>Llegada rápida a los principales centros comerciales de la zona 15.</p>
+            <p class="service-price">Q 60.00</p>
+        </a>
+        <a href="{% url 'cursos' %}" class="card">
+            <img src="{% static 'img/Rutas/peten.png' %}" alt="Ruta 4">
+            <h3>Ruta Sur a Norte</h3>
+            <p>Conexión desde el sur hasta el norte de la ciudad sin escalas.</p>
+            <p class="service-price">Q 75.00</p>
+        </a>
+    </div>
+</div>
+
+{% endblock content %}
