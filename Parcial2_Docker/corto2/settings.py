@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'axes.middleware.AxesMiddleware',
+    'app.middleware.RequestLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'corto2.urls'

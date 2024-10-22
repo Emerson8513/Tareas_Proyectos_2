@@ -14,3 +14,6 @@ class TeacherAdmin(admin.ModelAdmin):
     fields = ['name', 'lastname', 'image', 'dpi', 'email']  # Los campos que deseas mostrar en el admin
 
 admin.site.register(Teacher, TeacherAdmin)
+
+admin.site.register(ActionHistory)
+admin.site.register(RequestHistory)

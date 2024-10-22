@@ -45,7 +45,7 @@ class Course(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     modelo = models.CharField(max_length=50, default='N/A')
     placa = models.CharField(max_length=10, default='N/A')
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
     rating = models.CharField(max_length=10, blank=True, null=True)
     capacity = models.IntegerField(default=1)
@@ -178,3 +178,32 @@ class CustomerServiceForm(models.Model):
 
     def __str__(self):
         return f'Servicio al Cliente - {self.fecha_creacion}'
+    
+
+
+class ActionHistory(models.Model):
+    ACTION_CHOICES = [
+        ('create', 'Create'),
+        ('update', 'Update'),
+        ('delete', 'Delete'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    model_name = models.CharField(max_length=50)
+    object_id = models.PositiveIntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    changes = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user} {self.action} {self.model_name} {self.object_id} at {self.timestamp}"
+class RequestHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    path = models.CharField(max_length=255)
+    method = models.CharField(max_length=10)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    status_code = models.IntegerField()
+    response_body = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user} {self.method} {self.path} at {self.timestamp}"
