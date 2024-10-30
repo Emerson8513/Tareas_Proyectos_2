@@ -1,0 +1,37 @@
+<html>
+
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+    <div
+        style="max-width: 600px; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <img src="https://i.imgur.com/jJS6hrk_d.png" alt="Logo de tu empresa"
+            style="max-width: 150px; display: block; margin: 0 auto 20px;">
+
+        <h2 style="color: #333; text-align: center;">Confirmación de Matrícula</h2>
+
+        <p>Estimado <strong>{{ student.username }}</strong>,</p>
+        <p>Tu asignacion se ha procesado exitosamente. A continuación, te detallamos la información del curso :</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Teacher:</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ course.teacher }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Curso:</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ course.name }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Informacion Curso:</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">Rating: {{ course.rating }}</td>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Duracion:</td>
+                {% comment %} <td style="border: 1px solid #ddd; padding: 8px;">{{ enrollment.start_location }}</td> {% endcomment %}
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ course.duracion }}  Horas</td>
+            </tr>             
+        </table>
+
+        <p style="text-align: center; color: #555;">Gracias por confiar en nosotros. ¡Que tengas un excelente día!</p>
+    </div>
+</body>
+
+</html>

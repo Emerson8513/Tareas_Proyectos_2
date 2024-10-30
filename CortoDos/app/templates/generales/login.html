@@ -1,0 +1,182 @@
+{% extends 'generales/main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Poppins', Arial, sans-serif;
+        background-color: #f8f9fa;
+        /* Color de fondo para contraste */
+    }
+
+    .login-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-container h2 {
+        margin-bottom: 20px;
+        text-align: center;
+        color: #333;
+        font-size: 1.8em;
+    }
+
+    .login-container img {
+        display: block;
+        margin: 0 auto 20px;
+        width: 100px;
+    }
+
+    .alumnos-text {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color:
+            #333;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border:
+            1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .form-group button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color:
+        #645e74;
+        color: black;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .form-group button:hover {
+        background-color: #7a748c;
+    }
+
+    .error-messages {
+        margin-top: 10px;
+        color: #d9534f;
+        text-align: center;
+    }
+
+    .facial-login {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .facial-login a {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: black;
+        background-color: #645e74;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .facial-login a:hover {
+        background-color: #7a748c;
+    }
+
+    .toggle-password {
+        cursor: pointer;
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+</style>
+
+<div class="login-container">
+    <h2>Inicio de sesión</h2>
+    <img src="{% static 'img/Iconos/usuario.png' %}" alt="Logo USAC">
+    <p class="alumnos-text">Alumno</p>
+
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="username">Nombre de usuario:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password"   required>
+            <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>  
+
+        </div>
+        <div class="g-recaptcha" data-sitekey="6LfE0mEqAAAAAJOTLPzkz7oAPEx62DV-S7nxqf81"></div>
+        <div class="form-group">
+            <button type="submit">Iniciar Sesión</button>
+
+        </div>
+
+        {% if messages %}
+        <div class="error-messages">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </form>
+
+    <div class="facial-login">
+        <a href="{% url 'login_with_face' %}">Iniciar Sesión con Reconocimiento Facial</a>
+    </div>
+
+    <div class="facial-login">
+        <a href="{% url 'password_reset' %}">¿Olvidó su contraseña?</a>
+    </div>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        passwordInput.type
+            = (passwordInput.type === 'password') ? 'text' : 'password';
+    }
+    document.getElementById('username').addEventListener('input', function (event) {
+        var input = event.target;
+        var value = input.value;
+        var errorMessage = document.getElementById('error-message');
+
+        // Verificar si hay caracteres no permitidos
+        if (/[^a-zA-Z0-9]/.test(value)) {
+            errorMessage.style.display = 'block'; // Mostrar el mensaje de error
+        } else {
+            errorMessage.style.display = 'none'; // Ocultar el mensaje de error
+        }
+
+        // Eliminar caracteres que no sean letras o números
+        input.value = value.replace(/[^a-zA-Z0-9]/g, '');
+    });
+</script>  
+
+{% endblock %}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    {% load static %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Encabezado */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px 40px;
+            background-color: #f1f1f1;
+            border-bottom: 4px solid #333;
+        }
+
+        .header img {
+            width: 120px;
+            margin-right: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Harlow Solid Italic';
+            font-size: 36px;
+            color: #333;
+            margin: 0;
+            text-align: left;
+            text-decoration: underline;
+        }
+
+        /* Estilos del título */
+        h2 {
+            color: #333;
+            text-align: center;
+            font-weight: bold;
+            font-size: 28px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos de la tabla */
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: none;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        td {
+            color: #555;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Pie de página */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            font-size: 14px;
+            position: relative;
+            margin-top: 50px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Encabezado con logo y nombre de la empresa -->
+    <div class="header">
+        <img src="http://localhost:8000/statics/img/Iconos/taxi-logo.png" alt="Logo de Academia Usaca">
+        <h1>Academia Usac</h1>
+    </div>
+
+    <!-- Título del historial de servicios -->
+    <h2>Historial de Alumnos</h2>
+
+    <!-- Tabla con el historial de servicios -->
+    <table>
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                <th>Teléfono</th>
+                <th>Fecha de Asignacion</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for history in enrollment_history %}
+            <tr>
+                <td>{{ history.student.name }} {{ history.student.lastname }}</td>
+                <td>{{ history.student.telefhone }}</td>
+                <td>{{ history.expulsion_date }}</td>
+                <td>{{ history.grade }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay historial de Asignaciones.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pie de página con información de contacto -->
+    <div class="footer">
+        <p>Academia Usaca | Tel: (555) 123-4567 | Email: info@academiausaca.com</p>
+        <p><a href="https://www.academiausaca.com">www.academiausaca.com</a></p>
+    </div>
+
+</body>
+
+</html>

@@ -382,10 +382,6 @@ def enroll_in_course(request, course_id):
     
     return render(request, 'generales/enroll.html', {'form': form, 'course': course})
 
-
-
-
-
 @login_required
 def course_list(request):
     student = get_object_or_404(Student, username=request.user)  # Obtener el estudiante actual
@@ -500,13 +496,17 @@ def set_username_password(request, uidb64, token):
             password = request.POST.get('password')
 
             if username and password:
-                # Asigna el nuevo username y la contraseña
-                user.username = username
-                user.set_password(password)
-                user.save()
+                # Verifica si el nombre de usuario ya existe
+                if User.objects.filter(username=username).exists():
+                    messages.error(request, 'El nombre de usuario ya existe. Por favor, elige otro.')
+                else:
+                    # Asigna el nuevo username y la contraseña
+                    user.username = username
+                    user.set_password(password)
+                    user.save()
 
-                messages.success(request, 'Nombre de usuario y contraseña actualizados exitosamente.')
-                return redirect('login')  # Redirige al login
+                    messages.success(request, 'Nombre de usuario y contraseña actualizados exitosamente.')
+                    return redirect('login')  # Redirige al login
 
         return render(request, 'generales/set_username_password.html', {'validlink': True, 'user': user})
     else:
@@ -633,30 +633,6 @@ def send_confirmation_email_cobro(request: HttpRequest, enrollment):
     send_mail(subject, "", from_email, recipient_list, html_message=message)
 
 
-# def generate_pdf_report(request):
-#     teacher = get_object_or_404(Teacher, user=request.user)
-#     enrollments = Enrollment.objects.filter(course__teacher=teacher)
-
-#     context = {
-#         'enrollments': enrollments,
-#         'teacher': teacher,
-#         'base_url': request.build_absolute_uri('/')  # Obtener la URL base (http://127.0.0.1:8000/)
-#     }
-#     html = render_to_string('generales/pdf_report_template.html', context)
-
-#     config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')  # O sin ruta si está en PATH
-
-#     try:
-#         pdf = pdfkit.from_string(html, False, configuration=config)
-#     except Exception as e:
-#         messages.error(request, f'Error al generar PDF: {e}')
-#         return redirect('teacher_panel')
-
-#     response = HttpResponse(pdf, content_type='application/pdf')
-#     response['Content-Disposition'] = 'attachment; filename="reporte_alumnos.pdf"'
-#     return response
-
-
 @login_required
 def student_history(request):
     student = get_object_or_404(Student, user=request.user)
@@ -742,3 +718,5 @@ def info_teacher(request):
     return render(request, 'generales/info_teacher.html', {
         'teacher': teacher,
     })
+
+

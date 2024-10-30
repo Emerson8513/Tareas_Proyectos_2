@@ -29,9 +29,6 @@ class Teacher(models.Model):
         except:
             url = ''
         return url
-# models.py
-
-# models.py
 
 class Course(models.Model):
     CATEGORY_CHOICES = [

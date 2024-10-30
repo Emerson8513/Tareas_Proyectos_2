@@ -153,7 +153,7 @@ AXES_ONLY_USER_FAILURES = True
 
 
 # Email
-SITE_URL = 'http://127.0.0.1:8000'
+SITE_URL = 'http://192.168.1.136:8000'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)

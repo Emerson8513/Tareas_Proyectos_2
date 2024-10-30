@@ -1,0 +1,301 @@
+/* Estilos generales */
+body {
+    background-image: url('statics/img/fondo.jpg');
+    background-repeat: repeat; /* Hace que la imagen se repita en todo el fondo */
+    background-size: auto; /* Usa el tamaño original de la imagen */
+    background-position: top left; /* Comienza la repetición desde la esquina superior izquierda */
+}
+
+
+
+/* Icono de carrito */
+#cart-icon {
+    width: 25px;
+    display: inline-block;
+    margin: 0 5px 0 15px;
+}
+
+#cart-total {
+    display: inline-block;
+    text-align: center;
+    color: #fff;
+    background-color: #ff5722;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 20px;
+    margin-left: -10px;
+}
+
+/* Barra de navegación */
+.navbar {
+    padding: 10px 20px;
+    background-color: #1a73e8;
+    border-bottom: 4px solid #645e74;
+}
+
+.navbar-nav.ml-auto {
+    margin-left: auto;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: #645e74;
+}
+
+/* Botón de inicio de sesión */
+#login-boton {
+    background-color: #645e74;
+    color: #000;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#login-boton:hover {
+    background-color: #645e74;
+}
+
+/* Estilos para el contenedor principal */
+.container {
+    margin-top: 20px;
+}
+
+/* Título principal */
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #1a73e8;
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+/* Columnas de productos */
+.col-lg-4 {
+    margin-bottom: 20px;
+}
+
+/* Imágenes de productos */
+.thumbnail {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Elementos de productos */
+.box-element.product {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.box-element.product:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Botones */
+.btn {
+    margin-top: 10px;
+    margin-right: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline-secondary {
+    border-color: #333;
+    color: #333;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+.btn-outline-success {
+    border-color: #1a73e8;
+    color: #1a73e8;
+}
+
+.btn-outline-success:hover {
+    background-color: #1a73e8;
+    color: #fff;
+}
+
+/* Precio del producto */
+h4 {
+    margin-top: 10px;
+    color: #1a73e8;
+}
+
+/* Carrito de compras */
+.cart-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cart-row.header {
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.row-image {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor */
+.box-element {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+}
+
+.box-element:hover {
+    transform: translateY(-5px);
+}
+
+/* Botones oscuros */
+.btn-outline-dark {
+    margin-bottom: 10px;
+}
+
+/* Cantidad de productos */
+.quantity {
+    display: inline-block;
+    font-weight: 700;
+    padding-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Cambio de cantidad */
+.chg-quantity {
+    width: 20px;
+    cursor: pointer;
+    display: block;
+    margin-top: 5px;
+    transition: opacity 0.1s ease;
+}
+
+.chg-quantity:hover {
+    opacity: 0.6;
+}
+
+/* Recuadro informativo */
+.info-box {
+    background-color: rgba(33, 33, 33, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.section-content.show-info .info-box {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Estilos del carrusel de cursos */
+.course-card {
+    flex: 0 0 auto;
+    width: 300px;
+    margin-right: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    padding: 15px;
+    transition: transform 0.3s ease;
+}
+
+.course-card img {
+    max-width: 100%;
+    height: auto;
+    border-bottom: 1px solid #dddddd;
+}
+
+.course-card:hover {
+    transform: scale(1.05);
+}
+
+/* Estilo de botones del carrusel */
+.carousel-control-prev, .carousel-control-next {
+    width: 50px;
+}
+
+.carousel-control-prev:hover, .carousel-control-next:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.carousel-inner {
+    display: flex;
+}
+
+.carousel-item {
+    flex: 1 0 auto;
+    display: flex;
+}
+
+/* Botón ver todos los cursos */
+.btn-view-all {
+    display: block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #645e74;
+    color: #000;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.btn-view-all:hover {
+    background: #645e74;
+    color: #fff;
+}
+
+footer a {
+    color: white; /* Color del texto por defecto */
+    text-decoration: none; /* Eliminar el subrayado por defecto */
+}
+
+footer a:hover {
+    color: #645e74; /* Cambiar el color del texto a amarillo al pasar el mouse */
+    text-decoration: underline; /* Agregar subrayado al pasar el mouse */
+    text-decoration-color: #645e74; /* Cambiar el color del subrayado a amarillo */
+}
+
+.highlight {
+    font-size: 5rem; /* Ajusta el tamaño según sea necesario */
+    color: rgb(142, 133, 68); /* Color del texto */
+    text-shadow: 
+        -1px -1px 0 #000,  
+         1px -1px 0 #000,
+        -1px  1px 0 #000,
+         1px  1px 0 #000; /* Contorno negro */
+}

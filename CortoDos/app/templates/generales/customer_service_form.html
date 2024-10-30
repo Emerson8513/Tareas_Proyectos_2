@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{% static 'img/Iconos/taxi-logo.png' %}" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Retroalimentación</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"> <!-- Enlace a Google Fonts -->
+    <style>
+        body {
+            background-image: url("{% static 'img/Fondo/fondo.jpg' %}");
+            background-repeat: repeat; /* Hace que la imagen se repita en todo el fondo */
+            background-size: auto; /* Usa el tamaño original de la imagen */
+            background-position: top left; /* Comienza la repetición desde la esquina superior izquierda */
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            background-color: #212429; /* Color gris oscuro para el encabezado y pie de página */
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .navbar img {
+            margin-right: 10px;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            color: white; /* Color blanco para el texto del título */
+            font-family: 'Harlow Solid Italic', cursive; /* Cambiar fuente del título */
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .container {
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .star {
+            font-size: 30px;
+            cursor: pointer;
+            transition: color 0.2s;
+            color: lightgray;
+        }
+
+        .star:hover {
+            color: gold;
+        }
+
+        .star.selected {
+            color: gold;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <img src="{% static 'img/Iconos/taxi-logo.png' %}" alt="Logo Academia Usaca" width="50" height="50">
+        <h1>Academia Usaca</h1>
+    </header>
+
+    <div class="container">
+        <h2>Formulario de Retroalimentación</h2>
+        <h3>Califica nuestro servicio</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <div class="star-rating">
+                        <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                        <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                        <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                        <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                        <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                    </div>
+                    <input type="hidden" name="{{ field.name }}" id="{{ field.id_for_label }}" value="" />
+                    <div class="error-message">
+                        {{ field.errors }}
+                    </div>
+                </div>
+            {% endfor %}
+            <div style="text-align: center;">
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="navbar">
+        <p class="mb-0" style="color: white;">© 2024 Academia Usaca - Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const starRatings = document.querySelectorAll('.star-rating');
+
+            starRatings.forEach(rating => {
+                const stars = rating.querySelectorAll('.star');
+                stars.forEach(star => {
+                    star.addEventListener('mouseover', function () {
+                        stars.forEach(s => s.style.color = 'lightgray'); // Reset color
+                        for (let i = 0; i < this.dataset.value; i++) {
+                            stars[i].style.color = 'gold'; // Fill stars up to current hovered star
+                        }
+                    });
+
+                    star.addEventListener('mouseout', function () {
+                        // Reset stars to selected state or original color
+                        const selectedStars = rating.querySelectorAll('.star.selected');
+                        stars.forEach(s => s.style.color = 'lightgray'); // Reset color
+                        selectedStars.forEach(s => s.style.color = 'gold'); // Refill selected stars
+                    });
+
+                    star.addEventListener('click', function () {
+                        stars.forEach(s => s.classList.remove('selected')); // Remove selected class
+                        for (let i = 0; i < this.dataset.value; i++) {
+                            stars[i].classList.add('selected'); // Add selected class to clicked star and previous ones
+                        }
+                        const hiddenInput = rating.nextElementSibling; // Get hidden input
+                        hiddenInput.value = this.dataset.value; // Store the selected value
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
