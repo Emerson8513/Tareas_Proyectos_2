@@ -1,0 +1,3 @@
+Usuario,Fecha,Opción,Comprobar,Resultado
+kuto,Primer Ingreso,2024-08-11 20:01:22,None,None
+kuto,Verificar si una cadena es palíndromo.,2024-08-11 20:01:22,holamundo,No es palíndromo

@@ -1,0 +1,7 @@
+Usuario,Fecha,Opción,Comprobar,Resultado
+emerson,Primer Ingreso,2024-08-11 19:58:33,None,None
+emerson,Verificar si un número es perfecto.,2024-08-11 19:58:36,43,No es perfecto
+emerson,Verificar si un número es primo,2024-08-11 20:07:22,3,Es primo
+emerson,Verificar si un número es perfecto.,2024-08-11 20:10:37,10,No es perfecto
+emerson,Verificar si una cadena es palíndromo.,2024-08-11 20:16:33,hoal,No es palíndromo
+emerson,Verificar si una cadena es palíndromo.,2024-08-11 21:45:55,anitalagordalagartonanotragaladrogalatina,Es palíndromo
